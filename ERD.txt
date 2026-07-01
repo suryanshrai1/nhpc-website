@@ -1,0 +1,565 @@
+// ERD version-1- Core
+Table admins {
+  id bigint [pk, increment]
+
+  name varchar
+  email varchar [unique]
+  password_hash varchar
+
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table media_folders {
+  id bigint [pk, increment]
+
+  name varchar
+  slug varchar [unique]
+
+  parent_folder_id bigint [null]
+
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table media_files {
+  id bigint [pk, increment]
+
+  folder_id bigint
+
+  file_name varchar
+  original_name varchar
+
+  mime_type varchar
+  extension varchar
+
+  file_size bigint
+
+  storage_path varchar
+
+  alt_text text
+
+  uploaded_by bigint
+
+  created_at timestamp
+}
+
+Ref: media_files.folder_id > media_folders.id
+
+Ref: media_files.uploaded_by > admins.id
+
+Ref: media_folders.parent_folder_id > media_folders.id
+
+// Version 2- Homepage
+Table hero {
+  id bigint [pk, increment]
+
+  title varchar
+  subtitle text
+
+  hero_image_id bigint
+  hero_video_id bigint
+
+  created_by bigint
+  updated_by bigint
+
+  is_active boolean
+
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table hero_buttons {
+  id bigint [pk, increment]
+
+  hero_id bigint
+
+  label varchar
+
+  url varchar
+
+  variant varchar
+
+  display_order int
+}
+
+Table statistics {
+  id bigint [pk, increment]
+
+  label varchar
+
+  value varchar
+
+  display_order int
+
+  is_active boolean
+}
+
+Table about_us {
+  id bigint [pk, increment]
+
+  title varchar
+
+  overview text
+
+  mission text
+
+  vision text
+
+  history text
+
+  hero_image_id bigint
+
+  created_by bigint
+  updated_by bigint
+
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table homepage_sections {
+
+  id bigint [pk, increment]
+
+  section_key varchar
+
+  entity_type varchar
+
+  entity_id bigint
+
+  display_order int
+
+  is_visible boolean
+}
+
+Table homepage_featured_items {
+
+  id bigint [pk, increment]
+
+  section_key varchar
+
+  entity_type varchar
+
+  entity_id bigint
+
+  display_order int
+}
+Ref: hero.hero_image_id > media_files.id
+Ref: hero.hero_video_id > media_files.id
+
+Ref: hero.created_by > admins.id
+Ref: hero.updated_by > admins.id
+
+Ref: about_us.hero_image_id > media_files.id
+
+Ref: about_us.created_by > admins.id
+Ref: about_us.updated_by > admins.id
+
+Ref: hero_buttons.hero_id > hero.id
+
+// Version 3 Projects
+Table projects {
+
+  id bigint [pk, increment]
+
+  name varchar
+
+  slug varchar [unique]
+
+  short_description text
+
+  full_description text
+
+  project_type varchar
+
+  status varchar
+
+  capacity decimal
+
+  capacity_unit varchar
+
+  commission_date date
+
+  is_featured boolean
+
+  meta_title varchar
+
+  meta_description text
+
+  created_by bigint
+
+  updated_by bigint
+
+  is_active boolean
+
+  deleted_at timestamp
+
+  created_at timestamp
+
+  updated_at timestamp
+}
+
+Table project_locations {
+
+  id bigint [pk, increment]
+
+  project_id bigint
+
+  state varchar
+
+  district varchar
+
+  city varchar
+
+  latitude decimal
+
+  longitude decimal
+
+  marker_title varchar
+
+  marker_description text
+}
+
+Table project_specifications {
+
+  id bigint [pk, increment]
+
+  project_id bigint
+
+  specification_name varchar
+
+  specification_value varchar
+
+  unit varchar
+
+  display_order int
+}
+
+Table media_file_links {
+
+  id bigint [pk, increment]
+
+  media_file_id bigint
+
+  entity_type varchar
+
+  entity_id bigint
+
+  purpose varchar
+
+  display_order int
+}
+Ref: projects.created_by > admins.id
+Ref: projects.updated_by > admins.id
+
+Ref: project_locations.project_id - projects.id
+
+Ref: project_specifications.project_id > projects.id
+
+Ref: media_file_links.media_file_id > media_files.id
+
+// ERD V4 — News & Tenders
+Table news_categories {
+  id bigint [pk, increment]
+
+  name varchar
+  slug varchar [unique]
+
+  description text
+
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table news {
+
+  id bigint [pk, increment]
+
+  category_id bigint
+
+  title varchar
+
+  slug varchar [unique]
+
+  summary text
+
+  content text
+
+  published_at timestamp
+
+  is_featured boolean
+
+  meta_title varchar
+
+  meta_description text
+
+  created_by bigint
+
+  updated_by bigint
+
+  is_active boolean
+
+  deleted_at timestamp
+
+  created_at timestamp
+
+  updated_at timestamp
+}
+
+Table tenders {
+
+  id bigint [pk, increment]
+
+  title varchar
+
+  tender_number varchar [unique]
+
+  department varchar
+
+  category varchar
+
+  description text
+
+  opening_date date
+
+  closing_date date
+
+  status varchar
+
+  meta_title varchar
+
+  meta_description text
+
+  created_by bigint
+
+  updated_by bigint
+
+  is_active boolean
+
+  deleted_at timestamp
+
+  created_at timestamp
+
+  updated_at timestamp
+}
+Ref: news.category_id > news_categories.id
+
+Ref: news.created_by > admins.id
+Ref: news.updated_by > admins.id
+
+Ref: tenders.created_by > admins.id
+Ref: tenders.updated_by > admins.id
+
+// ERD V5 — Careers, Leadership & Contact
+Table careers {
+
+  id bigint [pk, increment]
+
+  title varchar
+
+  department varchar
+
+  location varchar
+
+  employment_type varchar
+
+  description text
+
+  application_deadline date
+
+  status varchar
+
+  created_by bigint
+
+  updated_by bigint
+
+  is_active boolean
+
+  deleted_at timestamp
+
+  created_at timestamp
+
+  updated_at timestamp
+}
+
+Table career_applications {
+
+  id bigint [pk, increment]
+
+  career_id bigint
+
+  full_name varchar
+
+  email varchar
+
+  phone varchar
+
+  resume_link varchar
+
+  cover_letter text
+
+  status varchar
+
+  applied_at timestamp
+}
+
+Table leadership {
+
+  id bigint [pk, increment]
+
+  full_name varchar
+
+  designation varchar
+
+  biography text
+
+  display_order int
+
+  created_by bigint
+
+  updated_by bigint
+
+  is_active boolean
+
+  created_at timestamp
+
+  updated_at timestamp
+}
+
+Table sustainability {
+
+  id bigint [pk, increment]
+
+  title varchar
+
+  summary text
+
+  content text
+
+  created_by bigint
+
+  updated_by bigint
+
+  is_active boolean
+
+  created_at timestamp
+
+  updated_at timestamp
+}
+
+Table contact_information {
+
+  id bigint [pk, increment]
+
+  office_name varchar
+
+  address text
+
+  phone varchar
+
+  email varchar
+
+  working_hours varchar
+
+  map_embed_url text
+
+  created_at timestamp
+
+  updated_at timestamp
+}
+
+Table contact_messages {
+
+  id bigint [pk, increment]
+
+  full_name varchar
+
+  email varchar
+
+  phone varchar
+
+  subject varchar
+
+  message text
+
+  is_read boolean
+
+  submitted_at timestamp
+}
+Ref: career_applications.career_id > careers.id
+
+Ref: careers.created_by > admins.id
+Ref: careers.updated_by > admins.id
+
+Ref: leadership.created_by > admins.id
+Ref: leadership.updated_by > admins.id
+
+Ref: sustainability.created_by > admins.id
+Ref: sustainability.updated_by > admins.id
+
+// ERD V6 — Investors & Navigation
+Table investor_categories {
+
+  id bigint [pk, increment]
+
+  name varchar
+
+  description text
+}
+
+Table investor_documents {
+
+  id bigint [pk, increment]
+
+  category_id bigint
+
+  title varchar
+
+  financial_year varchar
+
+  created_by bigint
+
+  updated_by bigint
+
+  is_active boolean
+
+  created_at timestamp
+
+  updated_at timestamp
+}
+
+Table navigation_menus {
+
+  id bigint [pk, increment]
+
+  name varchar
+
+  location varchar
+
+  created_at timestamp
+}
+
+Table navigation_items {
+
+  id bigint [pk, increment]
+
+  menu_id bigint
+
+  label varchar
+
+  url varchar
+
+  parent_item_id bigint
+
+  display_order int
+
+  is_active boolean
+}
+Ref: investor_documents.category_id > investor_categories.id
+
+Ref: investor_documents.created_by > admins.id
+Ref: investor_documents.updated_by > admins.id
+
+Ref: navigation_items.menu_id > navigation_menus.id
+
+Ref: navigation_items.parent_item_id > navigation_items.id

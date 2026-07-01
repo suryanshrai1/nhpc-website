@@ -1,0 +1,123 @@
+# ==========================================================
+# NHPC Website
+# Global .gitignore
+# ==========================================================
+
+############################
+# Dependencies
+############################
+
+node_modules/
+**/node_modules/
+
+############################
+# Build Outputs
+############################
+
+dist/
+build/
+coverage/
+.out/
+
+**/dist/
+**/build/
+
+############################
+# Environment Files
+############################
+
+.env
+.env.*
+!.env.example
+
+############################
+# Logs
+############################
+
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+############################
+# Runtime Files
+############################
+
+*.pid
+*.seed
+*.pid.lock
+
+############################
+# OS Files
+############################
+
+.DS_Store
+Thumbs.db
+desktop.ini
+
+############################
+# VS Code
+############################
+
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+
+############################
+# JetBrains
+############################
+
+.idea/
+
+############################
+# Prisma
+############################
+
+prisma/dev.db
+prisma/dev.db-journal
+
+############################
+# Uploads
+############################
+
+backend/uploads/
+backend/temp/
+backend/output/
+backend/outputs/
+
+############################
+# Generated Files
+############################
+
+*.tsbuildinfo
+
+############################
+# Testing
+############################
+
+coverage/
+.nyc_output/
+
+############################
+# Cache
+############################
+
+.cache/
+.parcel-cache/
+.eslintcache
+
+############################
+# Misc
+############################
+
+*.tmp
+*.swp
+
+############################
+# Keep Empty Directories
+############################
+
+!backend/uploads/.gitkeep
+!backend/temp/.gitkeep
