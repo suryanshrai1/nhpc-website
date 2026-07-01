@@ -6,3 +6,839 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+model admins {
+  id            BigInt        @id(map: "pk_admins") @default(autoincrement())
+  full_name     String        @db.VarChar(150)
+  email         String        @unique(map: "uq_admins_email") @db.VarChar(255)
+  password_hash String
+  role          String        @db.VarChar(50)
+  last_login_at DateTime?     @db.Timestamptz(6)
+  is_active     Boolean       @default(true)
+  created_at    DateTime      @default(now()) @db.Timestamptz(6)
+  updated_at    DateTime      @default(now()) @db.Timestamptz(6)
+  audit_logs    audit_logs[]
+  media_files   media_files[]
+
+  @@index([email], map: "idx_admins_email")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model application_statuses {
+  id               BigInt             @id(map: "pk_application_statuses") @default(autoincrement())
+  name             String             @unique(map: "uq_application_statuses_name") @db.VarChar(100)
+  code             String             @unique(map: "uq_application_statuses_code") @db.VarChar(30)
+  description      String?
+  display_order    Int                @default(1)
+  is_active        Boolean            @default(true)
+  created_at       DateTime           @default(now()) @db.Timestamptz(6)
+  updated_at       DateTime           @default(now()) @db.Timestamptz(6)
+  job_applications job_applications[]
+
+  @@index([code], map: "idx_application_statuses_code")
+  @@index([name], map: "idx_application_statuses_name")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model audit_logs {
+  id          BigInt   @id(map: "pk_audit_logs") @default(autoincrement())
+  admin_id    BigInt
+  action      String   @db.VarChar(50)
+  entity_type String   @db.VarChar(100)
+  entity_id   BigInt
+  old_data    Json?
+  new_data    Json?
+  ip_address  String?  @db.Inet
+  user_agent  String?
+  created_at  DateTime @default(now()) @db.Timestamptz(6)
+  admins      admins   @relation(fields: [admin_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_audit_logs_admin")
+
+  @@index([action], map: "idx_audit_logs_action")
+  @@index([admin_id], map: "idx_audit_logs_admin")
+  @@index([admin_id, created_at(sort: Desc)], map: "idx_audit_logs_admin_created")
+  @@index([created_at(sort: Desc)], map: "idx_audit_logs_created_at")
+  @@index([entity_type, entity_id], map: "idx_audit_logs_entity")
+  @@index([ip_address], map: "idx_audit_logs_ip")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model capacity_units {
+  id                         BigInt                       @id(map: "pk_capacity_units") @default(autoincrement())
+  name                       String                       @unique(map: "uq_capacity_units_name") @db.VarChar(100)
+  code                       String                       @unique(map: "uq_capacity_units_code") @db.VarChar(30)
+  description                String?
+  display_order              Int                          @default(1)
+  is_active                  Boolean                      @default(true)
+  created_at                 DateTime                     @default(now()) @db.Timestamptz(6)
+  updated_at                 DateTime                     @default(now()) @db.Timestamptz(6)
+  operational_power_stations operational_power_stations[]
+  projects                   projects[]
+
+  @@index([code], map: "idx_capacity_units_code")
+  @@index([name], map: "idx_capacity_units_name")
+}
+
+model contact_messages {
+  id                BigInt           @id(map: "pk_contact_messages") @default(autoincrement())
+  full_name         String           @db.VarChar(150)
+  email             String           @db.VarChar(255)
+  phone             String?          @db.VarChar(20)
+  department        String?          @db.VarChar(100)
+  subject           String           @db.VarChar(255)
+  message           String
+  message_status_id BigInt
+  submitted_at      DateTime         @default(now()) @db.Timestamptz(6)
+  created_at        DateTime         @default(now()) @db.Timestamptz(6)
+  updated_at        DateTime         @default(now()) @db.Timestamptz(6)
+  message_statuses  message_statuses @relation(fields: [message_status_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_contact_messages_status")
+
+  @@index([email], map: "idx_contact_messages_email")
+  @@index([message_status_id], map: "idx_contact_messages_status")
+  @@index([submitted_at], map: "idx_contact_messages_submitted")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model employment_types {
+  id            BigInt         @id(map: "pk_employment_types") @default(autoincrement())
+  name          String         @unique(map: "uq_employment_types_name") @db.VarChar(100)
+  code          String         @unique(map: "uq_employment_types_code") @db.VarChar(30)
+  description   String?
+  display_order Int            @default(1)
+  is_active     Boolean        @default(true)
+  created_at    DateTime       @default(now()) @db.Timestamptz(6)
+  updated_at    DateTime       @default(now()) @db.Timestamptz(6)
+  job_openings  job_openings[]
+
+  @@index([code], map: "idx_employment_types_code")
+  @@index([name], map: "idx_employment_types_name")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model financial_years {
+  id                  BigInt                @id(map: "pk_financial_years") @default(autoincrement())
+  label               String                @unique(map: "uq_financial_years_label") @db.VarChar(20)
+  start_year          Int
+  end_year            Int
+  display_order       Int                   @default(1)
+  is_active           Boolean               @default(true)
+  created_at          DateTime              @default(now()) @db.Timestamptz(6)
+  updated_at          DateTime              @default(now()) @db.Timestamptz(6)
+  investor_documents  investor_documents[]
+  investor_highlights investor_highlights[]
+
+  @@index([label], map: "idx_financial_years_label")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model hero_buttons {
+  id                BigInt            @id(map: "pk_hero_buttons") @default(autoincrement())
+  section_id        BigInt
+  label             String            @db.VarChar(100)
+  url               String
+  button_style      String            @db.VarChar(30)
+  display_order     Int               @default(1)
+  is_active         Boolean           @default(true)
+  created_at        DateTime          @default(now()) @db.Timestamptz(6)
+  updated_at        DateTime          @default(now()) @db.Timestamptz(6)
+  homepage_sections homepage_sections @relation(fields: [section_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_hero_buttons_section")
+
+  @@index([display_order], map: "idx_hero_buttons_order")
+  @@index([section_id], map: "idx_hero_buttons_section")
+}
+
+model homepage_content {
+  id                BigInt            @id(map: "pk_homepage_content") @default(autoincrement())
+  section_id        BigInt
+  content_key       String            @db.VarChar(100)
+  content_value     String?
+  created_at        DateTime          @default(now()) @db.Timestamptz(6)
+  updated_at        DateTime          @default(now()) @db.Timestamptz(6)
+  homepage_sections homepage_sections @relation(fields: [section_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_homepage_content_section")
+
+  @@unique([section_id, content_key], map: "uq_homepage_content_key")
+  @@index([section_id], map: "idx_homepage_content_section")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model homepage_sections {
+  id               BigInt             @id(map: "pk_homepage_sections") @default(autoincrement())
+  section_key      String             @unique(map: "uq_homepage_sections_key") @db.VarChar(50)
+  title            String?            @db.VarChar(255)
+  subtitle         String?
+  display_order    Int                @default(1)
+  is_visible       Boolean            @default(true)
+  created_at       DateTime           @default(now()) @db.Timestamptz(6)
+  updated_at       DateTime           @default(now()) @db.Timestamptz(6)
+  hero_buttons     hero_buttons[]
+  homepage_content homepage_content[]
+
+  @@index([display_order], map: "idx_homepage_sections_order")
+  @@index([is_visible], map: "idx_homepage_sections_visible")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model investor_document_types {
+  id                 BigInt               @id(map: "pk_investor_document_types") @default(autoincrement())
+  name               String               @unique(map: "uq_investor_document_types_name") @db.VarChar(100)
+  code               String               @unique(map: "uq_investor_document_types_code") @db.VarChar(30)
+  description        String?
+  display_order      Int                  @default(1)
+  is_active          Boolean              @default(true)
+  created_at         DateTime             @default(now()) @db.Timestamptz(6)
+  updated_at         DateTime             @default(now()) @db.Timestamptz(6)
+  investor_documents investor_documents[]
+
+  @@index([code], map: "idx_investor_document_types_code")
+  @@index([name], map: "idx_investor_document_types_name")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model investor_documents {
+  id                        BigInt                  @id(map: "pk_investor_documents") @default(autoincrement())
+  title                     String                  @db.VarChar(255)
+  investor_document_type_id BigInt
+  financial_year_id         BigInt?
+  description               String?
+  media_file_id             BigInt
+  published_at              DateTime?               @db.Timestamptz(6)
+  display_order             Int                     @default(1)
+  is_active                 Boolean                 @default(true)
+  created_at                DateTime                @default(now()) @db.Timestamptz(6)
+  updated_at                DateTime                @default(now()) @db.Timestamptz(6)
+  media_files               media_files             @relation(fields: [media_file_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_investor_documents_media")
+  investor_document_types   investor_document_types @relation(fields: [investor_document_type_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_investor_documents_type")
+  financial_years           financial_years?        @relation(fields: [financial_year_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_investor_documents_year")
+
+  @@index([financial_year_id, investor_document_type_id], map: "idx_investor_documents_listing")
+  @@index([published_at], map: "idx_investor_documents_published")
+  @@index([investor_document_type_id], map: "idx_investor_documents_type")
+  @@index([financial_year_id], map: "idx_investor_documents_year")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model investor_highlights {
+  id                BigInt          @id(map: "pk_investor_highlights") @default(autoincrement())
+  financial_year_id BigInt
+  metric_name       String          @db.VarChar(150)
+  metric_value      String          @db.VarChar(100)
+  unit              String?         @db.VarChar(50)
+  display_order     Int             @default(1)
+  created_at        DateTime        @default(now()) @db.Timestamptz(6)
+  updated_at        DateTime        @default(now()) @db.Timestamptz(6)
+  financial_years   financial_years @relation(fields: [financial_year_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_investor_highlights_year")
+
+  @@index([metric_name], map: "idx_investor_highlights_metric")
+  @@index([financial_year_id], map: "idx_investor_highlights_year")
+}
+
+model job_applications {
+  id                    BigInt               @id(map: "pk_job_applications") @default(autoincrement())
+  job_opening_id        BigInt
+  full_name             String               @db.VarChar(150)
+  email                 String               @db.VarChar(255)
+  phone                 String               @db.VarChar(20)
+  address               String?
+  experience_years      Decimal?             @db.Decimal(4, 1)
+  resume_media_file_id  BigInt
+  cover_letter          String?
+  application_status_id BigInt
+  applied_at            DateTime             @default(now()) @db.Timestamptz(6)
+  created_at            DateTime             @default(now()) @db.Timestamptz(6)
+  updated_at            DateTime             @default(now()) @db.Timestamptz(6)
+  job_openings          job_openings         @relation(fields: [job_opening_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_job_applications_job")
+  media_files           media_files          @relation(fields: [resume_media_file_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_job_applications_resume")
+  application_statuses  application_statuses @relation(fields: [application_status_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_job_applications_status")
+
+  @@unique([job_opening_id, email], map: "uq_job_applications_job_email")
+  @@index([email], map: "idx_job_applications_email")
+  @@index([job_opening_id], map: "idx_job_applications_job")
+  @@index([application_status_id], map: "idx_job_applications_status")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model job_documents {
+  id             BigInt       @id(map: "pk_job_documents") @default(autoincrement())
+  job_opening_id BigInt
+  media_file_id  BigInt
+  title          String       @db.VarChar(200)
+  display_order  Int          @default(1)
+  created_at     DateTime     @default(now()) @db.Timestamptz(6)
+  updated_at     DateTime     @default(now()) @db.Timestamptz(6)
+  job_openings   job_openings @relation(fields: [job_opening_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_job_documents_job")
+  media_files    media_files  @relation(fields: [media_file_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_job_documents_media")
+
+  @@index([job_opening_id], map: "idx_job_documents_job")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model job_openings {
+  id                   BigInt             @id(map: "pk_job_openings") @default(autoincrement())
+  title                String             @db.VarChar(255)
+  slug                 String             @unique(map: "uq_job_openings_slug") @db.VarChar(255)
+  employment_type_id   BigInt
+  location             String?            @db.VarChar(150)
+  vacancies            Int?
+  summary              String?
+  description          String?
+  published_at         DateTime?          @db.Timestamptz(6)
+  application_deadline DateTime?          @db.Date
+  display_order        Int                @default(1)
+  is_active            Boolean            @default(true)
+  created_at           DateTime           @default(now()) @db.Timestamptz(6)
+  updated_at           DateTime           @default(now()) @db.Timestamptz(6)
+  job_applications     job_applications[]
+  job_documents        job_documents[]
+  employment_types     employment_types   @relation(fields: [employment_type_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_job_openings_employment_type")
+
+  @@index([application_deadline], map: "idx_job_openings_deadline")
+  @@index([employment_type_id], map: "idx_job_openings_employment_type")
+  @@index([is_active, application_deadline], map: "idx_job_openings_listing")
+  @@index([slug], map: "idx_job_openings_slug")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model leadership {
+  id                  BigInt            @id(map: "pk_leadership") @default(autoincrement())
+  full_name           String            @db.VarChar(200)
+  slug                String            @unique(map: "uq_leadership_slug") @db.VarChar(250)
+  designation         String            @db.VarChar(200)
+  leadership_level_id BigInt
+  qualification       String?
+  experience_summary  String?
+  description         String?
+  email               String?           @db.VarChar(255)
+  phone               String?           @db.VarChar(30)
+  display_order       Int               @default(1)
+  is_active           Boolean           @default(true)
+  created_at          DateTime          @default(now()) @db.Timestamptz(6)
+  updated_at          DateTime          @default(now()) @db.Timestamptz(6)
+  leadership_levels   leadership_levels @relation(fields: [leadership_level_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_leadership_level")
+
+  @@index([is_active], map: "idx_leadership_active")
+  @@index([display_order], map: "idx_leadership_display_order")
+  @@index([leadership_level_id], map: "idx_leadership_level")
+  @@index([is_active, display_order], map: "idx_leadership_listing")
+  @@index([slug], map: "idx_leadership_slug")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model leadership_levels {
+  id            BigInt       @id(map: "pk_leadership_levels") @default(autoincrement())
+  name          String       @unique(map: "uq_leadership_levels_name") @db.VarChar(100)
+  code          String       @unique(map: "uq_leadership_levels_code") @db.VarChar(30)
+  description   String?
+  display_order Int          @default(1)
+  is_active     Boolean      @default(true)
+  created_at    DateTime     @default(now()) @db.Timestamptz(6)
+  updated_at    DateTime     @default(now()) @db.Timestamptz(6)
+  leadership    leadership[]
+
+  @@index([code], map: "idx_leadership_levels_code")
+  @@index([name], map: "idx_leadership_levels_name")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model media_file_links {
+  id            BigInt      @id(map: "pk_media_file_links") @default(autoincrement())
+  media_file_id BigInt
+  entity_type   String      @db.VarChar(50)
+  entity_id     BigInt
+  purpose       String      @db.VarChar(100)
+  display_order Int         @default(1)
+  created_at    DateTime    @default(now()) @db.Timestamptz(6)
+  media_files   media_files @relation(fields: [media_file_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_media_file_links_media")
+
+  @@index([entity_type, entity_id], map: "idx_media_links_entity")
+  @@index([media_file_id], map: "idx_media_links_media")
+  @@index([purpose], map: "idx_media_links_purpose")
+}
+
+model media_files {
+  id                 BigInt               @id(map: "pk_media_files") @default(autoincrement())
+  folder_id          BigInt?
+  original_name      String               @db.VarChar(255)
+  stored_name        String               @db.VarChar(255)
+  mime_type          String               @db.VarChar(100)
+  extension          String               @db.VarChar(20)
+  size_bytes         BigInt
+  width              Int?
+  height             Int?
+  duration_seconds   Decimal?             @db.Decimal(10, 2)
+  storage_provider   String               @default("LOCAL") @db.VarChar(50)
+  storage_path       String
+  alt_text           String?              @db.VarChar(255)
+  caption            String?
+  uploaded_by        BigInt
+  created_at         DateTime             @default(now()) @db.Timestamptz(6)
+  updated_at         DateTime             @default(now()) @db.Timestamptz(6)
+  investor_documents investor_documents[]
+  job_applications   job_applications[]
+  job_documents      job_documents[]
+  media_file_links   media_file_links[]
+  media_folders      media_folders?       @relation(fields: [folder_id], references: [id], onUpdate: NoAction, map: "fk_media_files_folder")
+  admins             admins               @relation(fields: [uploaded_by], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_media_files_uploaded_by")
+  news_documents     news_documents[]
+  project_documents  project_documents[]
+  tender_documents   tender_documents[]
+
+  @@index([folder_id], map: "idx_media_files_folder")
+  @@index([storage_provider], map: "idx_media_files_storage_provider")
+  @@index([uploaded_by], map: "idx_media_files_uploaded_by")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model media_folders {
+  id                  BigInt          @id(map: "pk_media_folders") @default(autoincrement())
+  parent_id           BigInt?
+  name                String          @db.VarChar(150)
+  description         String?
+  display_order       Int             @default(1)
+  created_at          DateTime        @default(now()) @db.Timestamptz(6)
+  updated_at          DateTime        @default(now()) @db.Timestamptz(6)
+  media_files         media_files[]
+  media_folders       media_folders?  @relation("media_foldersTomedia_folders", fields: [parent_id], references: [id], onUpdate: NoAction, map: "fk_media_folders_parent")
+  other_media_folders media_folders[] @relation("media_foldersTomedia_folders")
+
+  @@index([name], map: "idx_media_folders_name")
+  @@index([parent_id], map: "idx_media_folders_parent")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model message_statuses {
+  id               BigInt             @id(map: "pk_message_statuses") @default(autoincrement())
+  name             String             @unique(map: "uq_message_statuses_name") @db.VarChar(100)
+  code             String             @unique(map: "uq_message_statuses_code") @db.VarChar(30)
+  description      String?
+  display_order    Int                @default(1)
+  is_active        Boolean            @default(true)
+  created_at       DateTime           @default(now()) @db.Timestamptz(6)
+  updated_at       DateTime           @default(now()) @db.Timestamptz(6)
+  contact_messages contact_messages[]
+
+  @@index([code], map: "idx_message_statuses_code")
+  @@index([name], map: "idx_message_statuses_name")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model navigation_menu {
+  id                    BigInt            @id(map: "pk_navigation_menu") @default(autoincrement())
+  parent_id             BigInt?
+  label                 String            @db.VarChar(100)
+  route                 String            @unique(map: "uq_navigation_menu_route") @db.VarChar(255)
+  icon                  String?           @db.VarChar(100)
+  menu_location         String            @default("HEADER") @db.VarChar(30)
+  display_order         Int               @default(1)
+  is_visible            Boolean           @default(true)
+  open_in_new_tab       Boolean           @default(false)
+  created_at            DateTime          @default(now()) @db.Timestamptz(6)
+  updated_at            DateTime          @default(now()) @db.Timestamptz(6)
+  navigation_menu       navigation_menu?  @relation("navigation_menuTonavigation_menu", fields: [parent_id], references: [id], onUpdate: NoAction, map: "fk_navigation_menu_parent")
+  other_navigation_menu navigation_menu[] @relation("navigation_menuTonavigation_menu")
+
+  @@index([menu_location], map: "idx_navigation_menu_location")
+  @@index([display_order], map: "idx_navigation_menu_order")
+  @@index([parent_id], map: "idx_navigation_menu_parent")
+  @@index([is_visible], map: "idx_navigation_menu_visible")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model news {
+  id               BigInt           @id(map: "pk_news") @default(autoincrement())
+  title            String           @db.VarChar(255)
+  slug             String           @unique(map: "uq_news_slug") @db.VarChar(255)
+  news_category_id BigInt
+  summary          String?
+  content          String?
+  published_at     DateTime?        @db.Timestamptz(6)
+  is_featured      Boolean          @default(false)
+  display_order    Int              @default(1)
+  is_active        Boolean          @default(true)
+  created_at       DateTime         @default(now()) @db.Timestamptz(6)
+  updated_at       DateTime         @default(now()) @db.Timestamptz(6)
+  news_categories  news_categories  @relation(fields: [news_category_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_news_category")
+  news_documents   news_documents[]
+
+  @@index([news_category_id], map: "idx_news_category")
+  @@index([is_featured], map: "idx_news_featured")
+  @@index([is_featured, is_active, published_at(sort: Desc)], map: "idx_news_homepage")
+  @@index([is_active, published_at(sort: Desc)], map: "idx_news_listing")
+  @@index([published_at], map: "idx_news_published")
+  @@index([slug], map: "idx_news_slug")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model news_categories {
+  id            BigInt   @id(map: "pk_news_categories") @default(autoincrement())
+  name          String   @unique(map: "uq_news_categories_name") @db.VarChar(100)
+  code          String   @unique(map: "uq_news_categories_code") @db.VarChar(30)
+  description   String?
+  display_order Int      @default(1)
+  is_active     Boolean  @default(true)
+  created_at    DateTime @default(now()) @db.Timestamptz(6)
+  updated_at    DateTime @default(now()) @db.Timestamptz(6)
+  news          news[]
+
+  @@index([code], map: "idx_news_categories_code")
+  @@index([name], map: "idx_news_categories_name")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model news_documents {
+  id            BigInt      @id(map: "pk_news_documents") @default(autoincrement())
+  news_id       BigInt
+  media_file_id BigInt
+  title         String      @db.VarChar(200)
+  display_order Int         @default(1)
+  created_at    DateTime    @default(now()) @db.Timestamptz(6)
+  updated_at    DateTime    @default(now()) @db.Timestamptz(6)
+  media_files   media_files @relation(fields: [media_file_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_news_documents_media")
+  news          news        @relation(fields: [news_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_news_documents_news")
+
+  @@index([news_id], map: "idx_news_documents_news")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model office_types {
+  id            BigInt    @id(map: "pk_office_types") @default(autoincrement())
+  name          String    @unique(map: "uq_office_types_name") @db.VarChar(100)
+  code          String    @unique(map: "uq_office_types_code") @db.VarChar(30)
+  description   String?
+  display_order Int       @default(1)
+  is_active     Boolean   @default(true)
+  created_at    DateTime  @default(now()) @db.Timestamptz(6)
+  updated_at    DateTime  @default(now()) @db.Timestamptz(6)
+  offices       offices[]
+
+  @@index([code], map: "idx_office_types_code")
+  @@index([name], map: "idx_office_types_name")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model offices {
+  id             BigInt       @id(map: "pk_offices") @default(autoincrement())
+  office_type_id BigInt
+  name           String       @db.VarChar(255)
+  address        String
+  city           String       @db.VarChar(100)
+  state_id       BigInt
+  pincode        String?      @db.VarChar(15)
+  phone          String?      @db.VarChar(30)
+  email          String?      @db.VarChar(255)
+  latitude       Decimal?     @db.Decimal(10, 7)
+  longitude      Decimal?     @db.Decimal(10, 7)
+  display_order  Int          @default(1)
+  is_active      Boolean      @default(true)
+  created_at     DateTime     @default(now()) @db.Timestamptz(6)
+  updated_at     DateTime     @default(now()) @db.Timestamptz(6)
+  states         states       @relation(fields: [state_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_offices_state")
+  office_types   office_types @relation(fields: [office_type_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_offices_type")
+
+  @@index([is_active], map: "idx_offices_active")
+  @@index([state_id], map: "idx_offices_state")
+  @@index([office_type_id], map: "idx_offices_type")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model operational_power_stations {
+  id                 BigInt         @id(map: "pk_operational_power_stations") @default(autoincrement())
+  name               String         @db.VarChar(200)
+  slug               String         @unique(map: "uq_operational_power_stations_slug") @db.VarChar(250)
+  state_id           BigInt
+  project_type_id    BigInt
+  installed_capacity Decimal        @db.Decimal(10, 2)
+  capacity_unit_id   BigInt
+  commissioned_on    DateTime?      @db.Date
+  latitude           Decimal?       @db.Decimal(10, 7)
+  longitude          Decimal?       @db.Decimal(10, 7)
+  description        String?
+  is_featured        Boolean        @default(false)
+  display_order      Int            @default(1)
+  is_active          Boolean        @default(true)
+  created_at         DateTime       @default(now()) @db.Timestamptz(6)
+  updated_at         DateTime       @default(now()) @db.Timestamptz(6)
+  capacity_units     capacity_units @relation(fields: [capacity_unit_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_ops_capacity_unit")
+  project_types      project_types  @relation(fields: [project_type_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_ops_project_type")
+  states             states         @relation(fields: [state_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_ops_state")
+
+  @@index([is_active, display_order], map: "idx_operational_power_stations_homepage")
+  @@index([is_active], map: "idx_ops_active")
+  @@index([display_order], map: "idx_ops_display_order")
+  @@index([is_featured], map: "idx_ops_featured")
+  @@index([slug], map: "idx_ops_slug")
+  @@index([state_id], map: "idx_ops_state")
+}
+
+model project_details {
+  id             BigInt   @id(map: "pk_project_details") @default(autoincrement())
+  project_id     BigInt   @unique(map: "uq_project_details_project")
+  overview       String?
+  history        String?
+  highlights     String?
+  current_status String?
+  future_plan    String?
+  created_at     DateTime @default(now()) @db.Timestamptz(6)
+  updated_at     DateTime @default(now()) @db.Timestamptz(6)
+  projects       projects @relation(fields: [project_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_project_details_project")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model project_documents {
+  id            BigInt      @id(map: "pk_project_documents") @default(autoincrement())
+  project_id    BigInt
+  media_file_id BigInt
+  title         String      @db.VarChar(200)
+  display_order Int         @default(1)
+  created_at    DateTime    @default(now()) @db.Timestamptz(6)
+  updated_at    DateTime    @default(now()) @db.Timestamptz(6)
+  media_files   media_files @relation(fields: [media_file_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_project_documents_media")
+  projects      projects    @relation(fields: [project_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_project_documents_project")
+
+  @@index([project_id], map: "idx_project_documents_project")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model project_statuses {
+  id            BigInt     @id(map: "pk_project_statuses") @default(autoincrement())
+  name          String     @unique(map: "uq_project_statuses_name") @db.VarChar(100)
+  code          String     @unique(map: "uq_project_statuses_code") @db.VarChar(30)
+  description   String?
+  display_order Int        @default(1)
+  is_active     Boolean    @default(true)
+  created_at    DateTime   @default(now()) @db.Timestamptz(6)
+  updated_at    DateTime   @default(now()) @db.Timestamptz(6)
+  projects      projects[]
+
+  @@index([code], map: "idx_project_statuses_code")
+  @@index([name], map: "idx_project_statuses_name")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model project_technical_details {
+  id            BigInt   @id(map: "pk_project_technical_details") @default(autoincrement())
+  project_id    BigInt
+  parameter     String   @db.VarChar(150)
+  value         String
+  display_order Int      @default(1)
+  created_at    DateTime @default(now()) @db.Timestamptz(6)
+  updated_at    DateTime @default(now()) @db.Timestamptz(6)
+  projects      projects @relation(fields: [project_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_project_technical_project")
+
+  @@index([project_id], map: "idx_project_technical_project")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model project_types {
+  id                         BigInt                       @id(map: "pk_project_types") @default(autoincrement())
+  name                       String                       @unique(map: "uq_project_types_name") @db.VarChar(100)
+  code                       String                       @unique(map: "uq_project_types_code") @db.VarChar(30)
+  description                String?
+  display_order              Int                          @default(1)
+  is_active                  Boolean                      @default(true)
+  created_at                 DateTime                     @default(now()) @db.Timestamptz(6)
+  updated_at                 DateTime                     @default(now()) @db.Timestamptz(6)
+  operational_power_stations operational_power_stations[]
+  projects                   projects[]
+
+  @@index([code], map: "idx_project_types_code")
+  @@index([name], map: "idx_project_types_name")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model projects {
+  id                        BigInt                      @id(map: "pk_projects") @default(autoincrement())
+  name                      String                      @db.VarChar(200)
+  slug                      String                      @unique(map: "uq_projects_slug") @db.VarChar(250)
+  state_id                  BigInt
+  project_type_id           BigInt
+  project_status_id         BigInt
+  capacity                  Decimal                     @db.Decimal(12, 2)
+  capacity_unit_id          BigInt
+  summary                   String?
+  latitude                  Decimal?                    @db.Decimal(10, 7)
+  longitude                 Decimal?                    @db.Decimal(10, 7)
+  is_featured               Boolean                     @default(false)
+  display_order             Int                         @default(1)
+  is_active                 Boolean                     @default(true)
+  created_at                DateTime                    @default(now()) @db.Timestamptz(6)
+  updated_at                DateTime                    @default(now()) @db.Timestamptz(6)
+  project_details           project_details?
+  project_documents         project_documents[]
+  project_technical_details project_technical_details[]
+  capacity_units            capacity_units              @relation(fields: [capacity_unit_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_projects_capacity_unit")
+  states                    states                      @relation(fields: [state_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_projects_state")
+  project_statuses          project_statuses            @relation(fields: [project_status_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_projects_status")
+  project_types             project_types               @relation(fields: [project_type_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_projects_type")
+
+  @@index([is_active], map: "idx_projects_active")
+  @@index([is_featured], map: "idx_projects_featured")
+  @@index([is_featured, is_active], map: "idx_projects_homepage")
+  @@index([is_active, display_order], map: "idx_projects_listing")
+  @@index([slug], map: "idx_projects_slug")
+  @@index([state_id], map: "idx_projects_state")
+  @@index([project_status_id], map: "idx_projects_status")
+  @@index([project_type_id], map: "idx_projects_type")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model settings {
+  id            BigInt   @id(map: "pk_settings") @default(autoincrement())
+  setting_key   String   @unique(map: "uq_settings_key") @db.VarChar(100)
+  setting_value String?
+  setting_type  String   @default("TEXT") @db.VarChar(30)
+  description   String?
+  is_public     Boolean  @default(true)
+  created_at    DateTime @default(now()) @db.Timestamptz(6)
+  updated_at    DateTime @default(now()) @db.Timestamptz(6)
+
+  @@index([setting_key], map: "idx_settings_key")
+  @@index([is_public], map: "idx_settings_public")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model states {
+  id                         BigInt                       @id(map: "pk_states") @default(autoincrement())
+  name                       String                       @unique(map: "uq_states_name") @db.VarChar(100)
+  code                       String                       @unique(map: "uq_states_code") @db.VarChar(30)
+  description                String?
+  display_order              Int                          @default(1)
+  is_active                  Boolean                      @default(true)
+  created_at                 DateTime                     @default(now()) @db.Timestamptz(6)
+  updated_at                 DateTime                     @default(now()) @db.Timestamptz(6)
+  offices                    offices[]
+  operational_power_stations operational_power_stations[]
+  projects                   projects[]
+
+  @@index([code], map: "idx_states_code")
+  @@index([name], map: "idx_states_name")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model statistics {
+  id            BigInt   @id(map: "pk_statistics") @default(autoincrement())
+  label         String   @db.VarChar(150)
+  value         String   @db.VarChar(100)
+  icon          String?  @db.VarChar(100)
+  display_order Int      @default(1)
+  is_active     Boolean  @default(true)
+  created_at    DateTime @default(now()) @db.Timestamptz(6)
+  updated_at    DateTime @default(now()) @db.Timestamptz(6)
+
+  @@index([is_active], map: "idx_statistics_active")
+  @@index([display_order], map: "idx_statistics_order")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model sustainability {
+  id                     BigInt               @id(map: "pk_sustainability") @default(autoincrement())
+  title                  String               @db.VarChar(255)
+  slug                   String               @unique(map: "uq_sustainability_slug") @db.VarChar(255)
+  sustainability_type_id BigInt
+  summary                String?
+  description            String?
+  published_at           DateTime?            @db.Timestamptz(6)
+  is_featured            Boolean              @default(false)
+  display_order          Int                  @default(1)
+  is_active              Boolean              @default(true)
+  created_at             DateTime             @default(now()) @db.Timestamptz(6)
+  updated_at             DateTime             @default(now()) @db.Timestamptz(6)
+  sustainability_types   sustainability_types @relation(fields: [sustainability_type_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_sustainability_type")
+
+  @@index([is_active], map: "idx_sustainability_active")
+  @@index([is_featured], map: "idx_sustainability_featured")
+  @@index([is_featured, is_active], map: "idx_sustainability_homepage")
+  @@index([published_at], map: "idx_sustainability_published")
+  @@index([slug], map: "idx_sustainability_slug")
+  @@index([sustainability_type_id], map: "idx_sustainability_type")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model sustainability_types {
+  id             BigInt           @id(map: "pk_sustainability_types") @default(autoincrement())
+  name           String           @unique(map: "uq_sustainability_types_name") @db.VarChar(100)
+  code           String           @unique(map: "uq_sustainability_types_code") @db.VarChar(30)
+  description    String?
+  display_order  Int              @default(1)
+  is_active      Boolean          @default(true)
+  created_at     DateTime         @default(now()) @db.Timestamptz(6)
+  updated_at     DateTime         @default(now()) @db.Timestamptz(6)
+  sustainability sustainability[]
+
+  @@index([code], map: "idx_sustainability_types_code")
+  @@index([name], map: "idx_sustainability_types_name")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model tender_categories {
+  id            BigInt    @id(map: "pk_tender_categories") @default(autoincrement())
+  name          String    @unique(map: "uq_tender_categories_name") @db.VarChar(100)
+  code          String    @unique(map: "uq_tender_categories_code") @db.VarChar(30)
+  description   String?
+  display_order Int       @default(1)
+  is_active     Boolean   @default(true)
+  created_at    DateTime  @default(now()) @db.Timestamptz(6)
+  updated_at    DateTime  @default(now()) @db.Timestamptz(6)
+  tenders       tenders[]
+
+  @@index([code], map: "idx_tender_categories_code")
+  @@index([name], map: "idx_tender_categories_name")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model tender_documents {
+  id            BigInt      @id(map: "pk_tender_documents") @default(autoincrement())
+  tender_id     BigInt
+  media_file_id BigInt
+  title         String      @db.VarChar(200)
+  display_order Int         @default(1)
+  created_at    DateTime    @default(now()) @db.Timestamptz(6)
+  updated_at    DateTime    @default(now()) @db.Timestamptz(6)
+  media_files   media_files @relation(fields: [media_file_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_tender_documents_media")
+  tenders       tenders     @relation(fields: [tender_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_tender_documents_tender")
+
+  @@index([tender_id], map: "idx_tender_documents_tender")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model tender_statuses {
+  id            BigInt    @id(map: "pk_tender_statuses") @default(autoincrement())
+  name          String    @unique(map: "uq_tender_statuses_name") @db.VarChar(100)
+  code          String    @unique(map: "uq_tender_statuses_code") @db.VarChar(30)
+  description   String?
+  display_order Int       @default(1)
+  is_active     Boolean   @default(true)
+  created_at    DateTime  @default(now()) @db.Timestamptz(6)
+  updated_at    DateTime  @default(now()) @db.Timestamptz(6)
+  tenders       tenders[]
+
+  @@index([code], map: "idx_tender_statuses_code")
+  @@index([name], map: "idx_tender_statuses_name")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model tenders {
+  id                 BigInt             @id(map: "pk_tenders") @default(autoincrement())
+  title              String             @db.VarChar(255)
+  tender_number      String             @unique(map: "uq_tenders_number") @db.VarChar(100)
+  slug               String             @unique(map: "uq_tenders_slug") @db.VarChar(255)
+  tender_category_id BigInt
+  tender_status_id   BigInt
+  summary            String?
+  description        String?
+  published_at       DateTime?          @db.Timestamptz(6)
+  opening_date       DateTime?          @db.Date
+  closing_date       DateTime?          @db.Date
+  display_order      Int                @default(1)
+  is_active          Boolean            @default(true)
+  created_at         DateTime           @default(now()) @db.Timestamptz(6)
+  updated_at         DateTime           @default(now()) @db.Timestamptz(6)
+  tender_documents   tender_documents[]
+  tender_categories  tender_categories  @relation(fields: [tender_category_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_tenders_category")
+  tender_statuses    tender_statuses    @relation(fields: [tender_status_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_tenders_status")
+
+  @@index([tender_category_id], map: "idx_tenders_category")
+  @@index([closing_date], map: "idx_tenders_closing")
+  @@index([is_active, published_at(sort: Desc)], map: "idx_tenders_homepage")
+  @@index([tender_status_id, closing_date], map: "idx_tenders_listing")
+  @@index([slug], map: "idx_tenders_slug")
+  @@index([tender_status_id], map: "idx_tenders_status")
+}
