@@ -1,17 +1,26 @@
 {
-  "name": "backend",
+  "name": "nhpc-website-backend",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "directories": {
-    "test": "tests"
-  },
+  "description": "Backend API for NHPC Website CMS",
+  "type": "module",
+  "main": "src/server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "nodemon src/server.js",
+    "start": "node src/server.js",
+    "prisma:generate": "prisma generate",
+    "prisma:pull": "prisma db pull",
+    "prisma:studio": "prisma studio",
+    "prisma:format": "prisma format"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "keywords": [
+    "nhpc",
+    "cms",
+    "express",
+    "postgresql",
+    "prisma"
+  ],
+  "author": "Suryansh Rai",
+  "license": "MIT",
   "dependencies": {
     "@prisma/client": "^6.19.3",
     "bcrypt": "^6.0.0",
@@ -26,10 +35,13 @@
     "morgan": "^1.11.0",
     "multer": "^2.2.0",
     "prisma": "^6.19.3",
-    "slugify": "^1.6.9",
+    "slugify": "^1.6.6",
     "zod": "^4.4.3"
   },
   "devDependencies": {
     "nodemon": "^3.1.14"
+  },
+  "engines": {
+    "node": ">=22.0.0"
   }
 }

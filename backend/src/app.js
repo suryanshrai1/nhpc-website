@@ -1,14 +1,36 @@
-const express = require("express");
+import express from "express";
+import cors from "cors";
+import helmet from "helmet";
+import compression from "compression";
+import cookieParser from "cookie-parser";
+import morgan from "morgan";
 
 const app = express();
 
+app.use(
+    cors({
+        origin: process.env.FRONTEND_URL,
+        credentials: true
+    })
+);
+
+app.use(helmet());
+
+app.use(compression());
+
+app.use(morgan("dev"));
+
 app.use(express.json());
 
-app.get("/api/v1/health", (req, res) => {
-  res.json({
-    success: true,
-    message: "NHPC CMS API is running."
-  });
+app.use(express.urlencoded({ extended: true }));
+
+app.use(cookieParser());
+
+app.get("/health", (req, res) => {
+    res.json({
+        success: true,
+        message: "NHPC Website API is running."
+    });
 });
 
-module.exports = app;
+export default app;
