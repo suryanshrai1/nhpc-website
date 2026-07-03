@@ -15,7 +15,7 @@ const validate = (schema) => {
                 new ApiError(
                     HTTP_STATUS.BAD_REQUEST,
                     "Validation failed.",
-                    error.errors
+                    error.issues
                 )
             );
 

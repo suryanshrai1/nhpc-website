@@ -5,7 +5,6 @@ import { verifyAccessToken } from "../utils/crypto/token.js";
 
 import { COOKIE_NAMES } from "../constants/cookies.js";
 
-
 const authMiddleware = (req, res, next) => {
 
     try {
