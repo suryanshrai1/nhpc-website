@@ -8,10 +8,16 @@ export const env = {
 
     DATABASE_URL: process.env.DATABASE_URL,
 
-    JWT_SECRET: process.env.JWT_SECRET,
-    JWT_EXPIRES_IN: process.env.JWT_EXPIRES_IN || "1d",
+    JWT_ACCESS_SECRET: process.env.JWT_ACCESS_SECRET,
+    JWT_REFRESH_SECRET: process.env.JWT_REFRESH_SECRET,
+
+    ACCESS_TOKEN_EXPIRY: process.env.ACCESS_TOKEN_EXPIRY || "15m",
+    REFRESH_TOKEN_EXPIRY: process.env.REFRESH_TOKEN_EXPIRY || "7d",
 
     BCRYPT_ROUNDS: Number(process.env.BCRYPT_ROUNDS) || 10,
 
-    FRONTEND_URL: process.env.FRONTEND_URL || "http://localhost:5173"
+    CLIENT_URL: process.env.CLIENT_URL,
+
+    UPLOAD_PATH: process.env.UPLOAD_PATH,
+    MAX_FILE_SIZE: Number(process.env.MAX_FILE_SIZE)
 };
