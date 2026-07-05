@@ -1,16 +1,16 @@
-import authService from "../services/auth.service.js";
+import authService from "./auth.service.js";
 
-import ApiResponse from "../utils/ApiResponse.js";
-import asyncHandler from "../utils/asyncHandler.js";
+import ApiResponse from "../../utils/ApiResponse.js";
+import asyncHandler from "../../utils/asyncHandler.js";
 
-import HTTP_STATUS from "../constants/httpStatus.js";
+import HTTP_STATUS from "../../constants/httpStatus.js";
 
-import { COOKIE_NAMES } from "../constants/cookies.js";
+import { COOKIE_NAMES } from "../../constants/cookies.js";
 
 import {
     accessTokenCookieOptions,
     refreshTokenCookieOptions
-} from "../constants/cookieOptions.js";
+} from "./cookieOptions.js";
 
 class AuthController {
 

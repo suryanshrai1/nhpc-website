@@ -1,15 +1,13 @@
 import fs from "fs/promises";
 
-import { extractMetadata } from "../utils/media/extractMetadata.js";
+import HTTP_STATUS from "../../constants/httpStatus.js";
+import ApiError from "../../errors/ApiError.js";
 
-import HTTP_STATUS from "../constants/httpStatus.js";
-import ApiError from "../errors/ApiError.js";
+import mediaRepository from "./media.repository.js";
 
-import mediaRepository from "../repositories/media.repository.js";
-
-import { getFileMetadata } from "../utils/media/fileMetadata.js";
-
-import { getAbsolutePath } from "../utils/media/getAbsolutePath.js";
+import { extractMetadata } from "./utils/extractMetadata.js";
+import { getFileMetadata } from "./utils/fileMetadata.js";
+import { getAbsolutePath } from "./utils/getAbsolutePath.js";
 
 
 class MediaService {

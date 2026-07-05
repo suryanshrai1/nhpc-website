@@ -1,20 +1,20 @@
-import HTTP_STATUS from "../constants/httpStatus.js";
-import ApiError from "../errors/ApiError.js";
+import HTTP_STATUS from "../../constants/httpStatus.js";
+import ApiError from "../../errors/ApiError.js";
 
-import authRepository from "../repositories/auth.repository.js";
+import authRepository from "./auth.repository.js";
 
 import {
     comparePassword,
     hashPassword
-} from "../utils/crypto/password.js";
+} from "../../utils/crypto/password.js";
 
 import {
     generateAccessToken,
     generateRefreshToken,
     verifyRefreshToken
-} from "../utils/crypto/token.js";
+} from "../../utils/crypto/token.js";
 
-import { sha256 } from "../utils/crypto/hash.js";
+import { sha256 } from "../../utils/crypto/hash.js";
 
 class AuthService {
 

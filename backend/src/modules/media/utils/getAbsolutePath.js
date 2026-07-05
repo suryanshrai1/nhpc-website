@@ -1,5 +1,5 @@
 import path from "path";
-import { env } from "../../config/env.js";
+import { env } from "../../../config/env.js";
 
 export const getAbsolutePath = (storagePath) => {
 

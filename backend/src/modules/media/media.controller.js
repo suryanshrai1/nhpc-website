@@ -1,9 +1,9 @@
-import mediaService from "../services/media.service.js";
+import mediaService from "../media/media.service.js";
 
-import ApiResponse from "../utils/ApiResponse.js";
-import asyncHandler from "../utils/asyncHandler.js";
+import ApiResponse from "../../utils/ApiResponse.js";
+import asyncHandler from "../../utils/asyncHandler.js";
 
-import HTTP_STATUS from "../constants/httpStatus.js";
+import HTTP_STATUS from "../../constants/httpStatus.js";
 
 class MediaController {
 

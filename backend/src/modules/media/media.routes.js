@@ -1,12 +1,12 @@
 import { Router } from "express";
 
-import mediaController from "../controllers/media.controller.js";
+import mediaController from "./media.controller.js";
 
-import authMiddleware from "../middlewares/auth.middleware.js";
-import upload from "../middlewares/upload.middleware.js";
-import validate from "../middlewares/validate.middleware.js";
+import authMiddleware from "../../middlewares/auth.middleware.js";
+import upload from "../../middlewares/upload.middleware.js";
+import validate from "../../middlewares/validate.middleware.js";
 
-import { uploadMediaSchema } from "../validators/media.validator.js";
+import { uploadMediaSchema } from "./media.validator.js";
 
 const router = Router();
 
