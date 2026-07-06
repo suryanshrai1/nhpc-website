@@ -12,9 +12,7 @@ import { env } from "./config/env.js";
 import errorMiddleware from "./middlewares/error.middleware.js";
 
 // Routes
-import authRoutes from "./modules/auth/auth.routes.js";
-import mediaRoutes from "./modules/media/media.routes.js";
-import testRoutes from "./modules/test/test.routes.js";
+import apiRoutes from "./routes/api.routes.js";
 
 const app = express();
 
@@ -81,11 +79,8 @@ app.get("/health", (req, res) => {
 // API Routes
 // -----------------------------------------------------
 
-app.use("/api/v1/auth", authRoutes);
+app.use("/api/v1", apiRoutes);
 
-app.use("/api/v1/media", mediaRoutes);
-
-app.use("/api/v1/test", testRoutes);
 
 // -----------------------------------------------------
 // Global Error Handler
