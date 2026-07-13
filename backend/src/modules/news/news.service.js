@@ -1,4 +1,4 @@
-import projectRepository from "./project.repository.js";
+import newsRepository from "./news.repository.js";
 
 import ApiError from "../../errors/ApiError.js";
 import HTTP_STATUS from "../../constants/httpStatus.js";
@@ -7,23 +7,23 @@ import buildPagination from "../../utils/pagination.js";
 
 import {
 
-    mapProjectCard,
+    mapNewsCard,
 
-    mapProjectDetails
+    mapNewsDetails
 
-} from "./project.mapper.js";
+} from "./news.mapper.js";
 
-class ProjectService {
+class NewsService {
 
     // =====================================================
-    // Projects Listing
+    // News Listing
     // =====================================================
 
-    async getProjects({
+    async getNews({
 
         page = 1,
 
-        limit = 12
+        limit = 10
 
     }) {
 
@@ -33,7 +33,7 @@ class ProjectService {
 
             total
 
-        } = await projectRepository.getProjects({
+        } = await newsRepository.getNews({
 
             page,
 
@@ -41,7 +41,7 @@ class ProjectService {
 
         });
 
-        const mappedItems = items.map(mapProjectCard);
+        const mappedItems = items.map(mapNewsCard);
 
         return {
 
@@ -64,29 +64,43 @@ class ProjectService {
     }
 
     // =====================================================
-    // Single Project
+    // Single News Article
     // =====================================================
 
-    async getProjectBySlug(slug) {
+    async getNewsBySlug(slug) {
 
-        const project = await projectRepository.getProjectBySlug(slug);
+        const news = await newsRepository.getNewsBySlug(slug);
 
-        if (!project) {
+        if (!news) {
 
             throw new ApiError(
 
                 HTTP_STATUS.NOT_FOUND,
 
-                "Project not found."
+                "News article not found."
 
             );
 
         }
 
-        return mapProjectDetails(project);
+        const relatedNews = await newsRepository.getRelatedNews(
+
+            news.id,
+
+            news.news_category_id
+
+        );
+
+        return mapNewsDetails(
+
+            news,
+
+            relatedNews
+
+        );
 
     }
 
 }
 
-export default new ProjectService();
+export default new NewsService();

@@ -1,4 +1,4 @@
-import projectRepository from "./project.repository.js";
+import leadershipRepository from "./leadership.repository.js";
 
 import ApiError from "../../errors/ApiError.js";
 import HTTP_STATUS from "../../constants/httpStatus.js";
@@ -7,23 +7,23 @@ import buildPagination from "../../utils/pagination.js";
 
 import {
 
-    mapProjectCard,
+    mapLeaderCard,
 
-    mapProjectDetails
+    mapLeaderDetails
 
-} from "./project.mapper.js";
+} from "./leadership.mapper.js";
 
-class ProjectService {
+class LeadershipService {
 
     // =====================================================
-    // Projects Listing
+    // Leadership Listing
     // =====================================================
 
-    async getProjects({
+    async getLeadership({
 
         page = 1,
 
-        limit = 12
+        limit = 10
 
     }) {
 
@@ -33,7 +33,7 @@ class ProjectService {
 
             total
 
-        } = await projectRepository.getProjects({
+        } = await leadershipRepository.getLeadership({
 
             page,
 
@@ -41,7 +41,11 @@ class ProjectService {
 
         });
 
-        const mappedItems = items.map(mapProjectCard);
+        const mappedItems = items.map(
+
+            mapLeaderCard
+
+        );
 
         return {
 
@@ -64,29 +68,37 @@ class ProjectService {
     }
 
     // =====================================================
-    // Single Project
+    // Single Leader
     // =====================================================
 
-    async getProjectBySlug(slug) {
+    async getLeaderBySlug(slug) {
 
-        const project = await projectRepository.getProjectBySlug(slug);
+        const leader = await leadershipRepository.getLeaderBySlug(
 
-        if (!project) {
+            slug
+
+        );
+
+        if (!leader) {
 
             throw new ApiError(
 
                 HTTP_STATUS.NOT_FOUND,
 
-                "Project not found."
+                "Leader not found."
 
             );
 
         }
 
-        return mapProjectDetails(project);
+        return mapLeaderDetails(
+
+            leader
+
+        );
 
     }
 
 }
 
-export default new ProjectService();
+export default new LeadershipService();

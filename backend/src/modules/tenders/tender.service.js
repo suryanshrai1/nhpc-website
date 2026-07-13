@@ -1,4 +1,4 @@
-import projectRepository from "./project.repository.js";
+import tenderRepository from "./tender.repository.js";
 
 import ApiError from "../../errors/ApiError.js";
 import HTTP_STATUS from "../../constants/httpStatus.js";
@@ -7,23 +7,23 @@ import buildPagination from "../../utils/pagination.js";
 
 import {
 
-    mapProjectCard,
+    mapTenderCard,
 
-    mapProjectDetails
+    mapTenderDetails
 
-} from "./project.mapper.js";
+} from "./tender.mapper.js";
 
-class ProjectService {
+class TenderService {
 
     // =====================================================
-    // Projects Listing
+    // Tender Listing
     // =====================================================
 
-    async getProjects({
+    async getTenders({
 
         page = 1,
 
-        limit = 12
+        limit = 10
 
     }) {
 
@@ -33,7 +33,7 @@ class ProjectService {
 
             total
 
-        } = await projectRepository.getProjects({
+        } = await tenderRepository.getTenders({
 
             page,
 
@@ -41,7 +41,11 @@ class ProjectService {
 
         });
 
-        const mappedItems = items.map(mapProjectCard);
+        const mappedItems = items.map(
+
+            mapTenderCard
+
+        );
 
         return {
 
@@ -64,29 +68,37 @@ class ProjectService {
     }
 
     // =====================================================
-    // Single Project
+    // Single Tender
     // =====================================================
 
-    async getProjectBySlug(slug) {
+    async getTenderBySlug(slug) {
 
-        const project = await projectRepository.getProjectBySlug(slug);
+        const tender = await tenderRepository.getTenderBySlug(
 
-        if (!project) {
+            slug
+
+        );
+
+        if (!tender) {
 
             throw new ApiError(
 
                 HTTP_STATUS.NOT_FOUND,
 
-                "Project not found."
+                "Tender not found."
 
             );
 
         }
 
-        return mapProjectDetails(project);
+        return mapTenderDetails(
+
+            tender
+
+        );
 
     }
 
 }
 
-export default new ProjectService();
+export default new TenderService();

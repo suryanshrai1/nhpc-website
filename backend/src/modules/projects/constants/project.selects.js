@@ -194,6 +194,7 @@ export const PROJECT_DETAIL_SELECT = {
 
             display_order: true,
 
+            
             media_files: {
 
                 select: MEDIA_FILE_SELECT
