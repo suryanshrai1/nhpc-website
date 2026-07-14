@@ -9,6 +9,10 @@ import newsRoutes from "../modules/news/index.js";
 import sustainabilityRoutes from "../modules/sustainability/index.js";
 import leadershipRoutes from "../modules/leadership/index.js";
 import tenderRoutes from "../modules/tenders/index.js";
+import careerRoutes from "../modules/careers/index.js";
+import investorRoutes from "../modules/investors/index.js";
+import dashboardRoutes from "../modules/admin/dashboard/index.js";
+import projectAdminRoutes from "../modules/projects/admin/index.js";
 
 const router = Router();
 
@@ -50,6 +54,40 @@ router.use(
     "/tenders",
 
     tenderRoutes
+
+);
+
+router.use(
+
+    "/careers",
+
+    careerRoutes
+
+);
+
+router.use(
+
+    "/investors",
+
+    investorRoutes
+
+);
+
+// Admin routes
+
+router.use(
+
+    "/admin/dashboard",
+
+    dashboardRoutes
+
+);
+
+router.use(
+
+    "/admin/projects",
+
+    projectAdminRoutes
 
 );
 

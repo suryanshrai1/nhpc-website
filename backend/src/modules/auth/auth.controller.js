@@ -16,7 +16,7 @@ class AuthController {
 
     login = asyncHandler(async (req, res) => {
 
-        const { email, password } = req.body;
+        const { email, password } = req.validated.body;
 
         const {
             admin,
@@ -117,7 +117,7 @@ class AuthController {
         const {
             currentPassword,
             newPassword
-        } = req.body;
+        } = req.validated.body;
 
         await authService.changePassword(
             req.user.id,
