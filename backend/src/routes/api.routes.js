@@ -13,6 +13,8 @@ import careerRoutes from "../modules/careers/index.js";
 import investorRoutes from "../modules/investors/index.js";
 import dashboardRoutes from "../modules/admin/dashboard/index.js";
 import projectAdminRoutes from "../modules/projects/admin/index.js";
+import newsAdminRoutes from "../modules/news/admin/index.js";
+
 
 const router = Router();
 
@@ -88,6 +90,14 @@ router.use(
     "/admin/projects",
 
     projectAdminRoutes
+
+);
+
+router.use(
+
+    "/admin/news",
+
+    newsAdminRoutes
 
 );
 
