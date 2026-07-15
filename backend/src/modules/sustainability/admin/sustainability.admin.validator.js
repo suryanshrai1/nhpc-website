@@ -5,7 +5,7 @@ const idSchema = z.coerce
     .int()
     .positive();
 
-export const getAdminCareersSchema = z.object({
+export const getAdminArticlesSchema = z.object({
 
     query: z.object({
 
@@ -26,7 +26,7 @@ export const getAdminCareersSchema = z.object({
 
 });
 
-export const getAdminCareerSchema = z.object({
+export const getAdminArticleSchema = z.object({
 
     params: z.object({
 
@@ -36,7 +36,7 @@ export const getAdminCareerSchema = z.object({
 
 });
 
-export const createCareerSchema = z.object({
+export const createArticleSchema = z.object({
 
     body: z.object({
 
@@ -50,11 +50,7 @@ export const createCareerSchema = z.object({
 
         ),
 
-        employment_type_id: idSchema,
-
-        location: z.string().trim().min(2).max(255),
-
-        vacancies: z.coerce.number().int().min(1),
+        sustainability_type_id: idSchema,
 
         summary: z.string().optional(),
 
@@ -62,7 +58,7 @@ export const createCareerSchema = z.object({
 
         published_at: z.coerce.date().optional(),
 
-        application_deadline: z.coerce.date().optional(),
+        is_featured: z.boolean().default(false),
 
         display_order: z.coerce.number().int().default(1),
 
@@ -72,7 +68,7 @@ export const createCareerSchema = z.object({
 
 });
 
-export const updateCareerSchema = z.object({
+export const updateArticleSchema = z.object({
 
     params: z.object({
 
@@ -80,11 +76,11 @@ export const updateCareerSchema = z.object({
 
     }),
 
-    body: createCareerSchema.shape.body
+    body: createArticleSchema.shape.body
 
 });
 
-export const updateCareerStatusSchema = z.object({
+export const updateArticleStatusSchema = z.object({
 
     params: z.object({
 

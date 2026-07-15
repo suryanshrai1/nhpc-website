@@ -5,7 +5,7 @@ const idSchema = z.coerce
     .int()
     .positive();
 
-export const getAdminCareersSchema = z.object({
+export const getAdminDocumentsSchema = z.object({
 
     query: z.object({
 
@@ -26,7 +26,7 @@ export const getAdminCareersSchema = z.object({
 
 });
 
-export const getAdminCareerSchema = z.object({
+export const getAdminDocumentSchema = z.object({
 
     params: z.object({
 
@@ -36,33 +36,21 @@ export const getAdminCareerSchema = z.object({
 
 });
 
-export const createCareerSchema = z.object({
+export const createDocumentSchema = z.object({
 
     body: z.object({
 
         title: z.string().trim().min(3).max(255),
 
-        slug: z.string().trim().regex(
+        investor_document_type_id: idSchema,
 
-            /^[a-z0-9]+(?:-[a-z0-9]+)*$/,
-
-            "Invalid slug."
-
-        ),
-
-        employment_type_id: idSchema,
-
-        location: z.string().trim().min(2).max(255),
-
-        vacancies: z.coerce.number().int().min(1),
-
-        summary: z.string().optional(),
+        financial_year_id: idSchema.optional(),
 
         description: z.string().optional(),
 
-        published_at: z.coerce.date().optional(),
+        media_file_id: idSchema,
 
-        application_deadline: z.coerce.date().optional(),
+        published_at: z.coerce.date().optional(),
 
         display_order: z.coerce.number().int().default(1),
 
@@ -72,7 +60,7 @@ export const createCareerSchema = z.object({
 
 });
 
-export const updateCareerSchema = z.object({
+export const updateDocumentSchema = z.object({
 
     params: z.object({
 
@@ -80,11 +68,11 @@ export const updateCareerSchema = z.object({
 
     }),
 
-    body: createCareerSchema.shape.body
+    body: createDocumentSchema.shape.body
 
 });
 
-export const updateCareerStatusSchema = z.object({
+export const updateDocumentStatusSchema = z.object({
 
     params: z.object({
 

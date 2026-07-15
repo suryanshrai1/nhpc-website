@@ -3,15 +3,15 @@ import asyncHandler from "../../../utils/asyncHandler.js";
 import ApiResponse from "../../../utils/ApiResponse.js";
 import HTTP_STATUS from "../../../constants/httpStatus.js";
 
-import careerAdminService from "./career.admin.service.js";
+import investorAdminService from "./investor.admin.service.js";
 
-class CareerAdminController {
+class InvestorAdminController {
 
-    getCareers = asyncHandler(async (req, res) => {
+    getDocuments = asyncHandler(async (req, res) => {
 
         const { page, limit } = req.validated.query;
 
-        const data = await careerAdminService.getCareers({
+        const data = await investorAdminService.getDocuments({
 
             page,
 
@@ -25,7 +25,7 @@ class CareerAdminController {
 
                 HTTP_STATUS.OK,
 
-                "Job openings fetched successfully.",
+                "Investor documents fetched successfully.",
 
                 data
 
@@ -35,11 +35,11 @@ class CareerAdminController {
 
     });
 
-    getCareerById = asyncHandler(async (req, res) => {
+    getDocumentById = asyncHandler(async (req, res) => {
 
         const { id } = req.validated.params;
 
-        const data = await careerAdminService.getCareerById(id);
+        const data = await investorAdminService.getDocumentById(id);
 
         return res.status(HTTP_STATUS.OK).json(
 
@@ -47,7 +47,7 @@ class CareerAdminController {
 
                 HTTP_STATUS.OK,
 
-                "Job opening fetched successfully.",
+                "Investor document fetched successfully.",
 
                 data
 
@@ -57,9 +57,9 @@ class CareerAdminController {
 
     });
 
-    createCareer = asyncHandler(async (req, res) => {
+    createDocument = asyncHandler(async (req, res) => {
 
-        const data = await careerAdminService.createCareer(
+        const data = await investorAdminService.createDocument(
 
             req.validated.body
 
@@ -71,7 +71,7 @@ class CareerAdminController {
 
                 HTTP_STATUS.CREATED,
 
-                "Job opening created successfully.",
+                "Investor document created successfully.",
 
                 data
 
@@ -81,11 +81,11 @@ class CareerAdminController {
 
     });
 
-    updateCareer = asyncHandler(async (req, res) => {
+    updateDocument = asyncHandler(async (req, res) => {
 
         const { id } = req.validated.params;
 
-        const data = await careerAdminService.updateCareer(
+        const data = await investorAdminService.updateDocument(
 
             id,
 
@@ -99,7 +99,7 @@ class CareerAdminController {
 
                 HTTP_STATUS.OK,
 
-                "Job opening updated successfully.",
+                "Investor document updated successfully.",
 
                 data
 
@@ -109,13 +109,13 @@ class CareerAdminController {
 
     });
 
-    updateCareerStatus = asyncHandler(async (req, res) => {
+    updateDocumentStatus = asyncHandler(async (req, res) => {
 
         const { id } = req.validated.params;
 
         const { is_active } = req.validated.body;
 
-        const data = await careerAdminService.updateCareerStatus(
+        const data = await investorAdminService.updateDocumentStatus(
 
             id,
 
@@ -129,7 +129,7 @@ class CareerAdminController {
 
                 HTTP_STATUS.OK,
 
-                "Job opening status updated successfully.",
+                "Investor document status updated successfully.",
 
                 data
 
@@ -139,11 +139,11 @@ class CareerAdminController {
 
     });
 
-    deleteCareer = asyncHandler(async (req, res) => {
+    deleteDocument = asyncHandler(async (req, res) => {
 
         const { id } = req.validated.params;
 
-        await careerAdminService.deleteCareer(id);
+        await investorAdminService.deleteDocument(id);
 
         return res.status(HTTP_STATUS.OK).json(
 
@@ -151,7 +151,7 @@ class CareerAdminController {
 
                 HTTP_STATUS.OK,
 
-                "Job opening deleted successfully.",
+                "Investor document deleted successfully.",
 
                 null
 
@@ -163,4 +163,4 @@ class CareerAdminController {
 
 }
 
-export default new CareerAdminController();
+export default new InvestorAdminController();

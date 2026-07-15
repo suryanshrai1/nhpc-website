@@ -3,27 +3,23 @@ import { Router } from "express";
 import authMiddleware from "../../../middlewares/auth.middleware.js";
 import validate from "../../../middlewares/validate.middleware.js";
 
-import careerAdminController from "./career.admin.controller.js";
+import leadershipAdminController from "./leadership.admin.controller.js";
 
 import {
 
-    getAdminCareersSchema,
+    getAdminLeadersSchema,
 
-    getAdminCareerSchema,
+    getAdminLeaderSchema,
 
-    createCareerSchema,
+    createLeaderSchema,
 
-    updateCareerSchema,
+    updateLeaderSchema,
 
-    updateCareerStatusSchema
+    updateLeaderStatusSchema
 
-} from "./career.admin.validator.js";
+} from "./leadership.admin.validator.js";
 
 const router = Router();
-
-// =====================================================
-// Authentication
-// =====================================================
 
 router.use(authMiddleware);
 
@@ -35,9 +31,9 @@ router.get(
 
     "/",
 
-    validate(getAdminCareersSchema),
+    validate(getAdminLeadersSchema),
 
-    careerAdminController.getCareers
+    leadershipAdminController.getLeaders
 
 );
 
@@ -45,9 +41,9 @@ router.get(
 
     "/:id",
 
-    validate(getAdminCareerSchema),
+    validate(getAdminLeaderSchema),
 
-    careerAdminController.getCareerById
+    leadershipAdminController.getLeaderById
 
 );
 
@@ -59,9 +55,9 @@ router.post(
 
     "/",
 
-    validate(createCareerSchema),
+    validate(createLeaderSchema),
 
-    careerAdminController.createCareer
+    leadershipAdminController.createLeader
 
 );
 
@@ -73,9 +69,9 @@ router.put(
 
     "/:id",
 
-    validate(updateCareerSchema),
+    validate(updateLeaderSchema),
 
-    careerAdminController.updateCareer
+    leadershipAdminController.updateLeader
 
 );
 
@@ -87,9 +83,9 @@ router.patch(
 
     "/:id/status",
 
-    validate(updateCareerStatusSchema),
+    validate(updateLeaderStatusSchema),
 
-    careerAdminController.updateCareerStatus
+    leadershipAdminController.updateLeaderStatus
 
 );
 
@@ -101,9 +97,9 @@ router.delete(
 
     "/:id",
 
-    validate(getAdminCareerSchema),
+    validate(getAdminLeaderSchema),
 
-    careerAdminController.deleteCareer
+    leadershipAdminController.deleteLeader
 
 );
 

@@ -15,7 +15,10 @@ import dashboardRoutes from "../modules/admin/dashboard/index.js";
 import projectAdminRoutes from "../modules/projects/admin/index.js";
 import newsAdminRoutes from "../modules/news/admin/index.js";
 import tenderAdminRoutes from "../modules/tenders/admin/index.js";
-
+import careerAdminRoutes from "../modules/careers/admin/index.js";
+import leadershipAdminRoutes from "../modules/leadership/admin/index.js";
+import sustainabilityAdminRoutes from "../modules/sustainability/admin/index.js";
+import investorAdminRoutes from "../modules/investors/admin/index.js";
 
 const router = Router();
 
@@ -107,6 +110,38 @@ router.use(
     "/admin/tenders",
 
     tenderAdminRoutes
+
+);
+
+router.use(
+
+    "/admin/careers",
+
+    careerAdminRoutes
+
+);
+
+router.use(
+
+    "/admin/leadership",
+
+    leadershipAdminRoutes
+
+);
+
+router.use(
+
+    "/admin/sustainability",
+
+    sustainabilityAdminRoutes
+
+);
+
+router.use(
+
+    "/admin/investors",
+
+    investorAdminRoutes
 
 );
 

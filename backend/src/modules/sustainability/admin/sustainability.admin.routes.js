@@ -3,27 +3,23 @@ import { Router } from "express";
 import authMiddleware from "../../../middlewares/auth.middleware.js";
 import validate from "../../../middlewares/validate.middleware.js";
 
-import careerAdminController from "./career.admin.controller.js";
+import sustainabilityAdminController from "./sustainability.admin.controller.js";
 
 import {
 
-    getAdminCareersSchema,
+    getAdminArticlesSchema,
 
-    getAdminCareerSchema,
+    getAdminArticleSchema,
 
-    createCareerSchema,
+    createArticleSchema,
 
-    updateCareerSchema,
+    updateArticleSchema,
 
-    updateCareerStatusSchema
+    updateArticleStatusSchema
 
-} from "./career.admin.validator.js";
+} from "./sustainability.admin.validator.js";
 
 const router = Router();
-
-// =====================================================
-// Authentication
-// =====================================================
 
 router.use(authMiddleware);
 
@@ -35,9 +31,9 @@ router.get(
 
     "/",
 
-    validate(getAdminCareersSchema),
+    validate(getAdminArticlesSchema),
 
-    careerAdminController.getCareers
+    sustainabilityAdminController.getArticles
 
 );
 
@@ -45,9 +41,9 @@ router.get(
 
     "/:id",
 
-    validate(getAdminCareerSchema),
+    validate(getAdminArticleSchema),
 
-    careerAdminController.getCareerById
+    sustainabilityAdminController.getArticleById
 
 );
 
@@ -59,9 +55,9 @@ router.post(
 
     "/",
 
-    validate(createCareerSchema),
+    validate(createArticleSchema),
 
-    careerAdminController.createCareer
+    sustainabilityAdminController.createArticle
 
 );
 
@@ -73,9 +69,9 @@ router.put(
 
     "/:id",
 
-    validate(updateCareerSchema),
+    validate(updateArticleSchema),
 
-    careerAdminController.updateCareer
+    sustainabilityAdminController.updateArticle
 
 );
 
@@ -87,9 +83,9 @@ router.patch(
 
     "/:id/status",
 
-    validate(updateCareerStatusSchema),
+    validate(updateArticleStatusSchema),
 
-    careerAdminController.updateCareerStatus
+    sustainabilityAdminController.updateArticleStatus
 
 );
 
@@ -101,9 +97,9 @@ router.delete(
 
     "/:id",
 
-    validate(getAdminCareerSchema),
+    validate(getAdminArticleSchema),
 
-    careerAdminController.deleteCareer
+    sustainabilityAdminController.deleteArticle
 
 );
 

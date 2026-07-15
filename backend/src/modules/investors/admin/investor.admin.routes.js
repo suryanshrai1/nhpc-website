@@ -3,27 +3,23 @@ import { Router } from "express";
 import authMiddleware from "../../../middlewares/auth.middleware.js";
 import validate from "../../../middlewares/validate.middleware.js";
 
-import careerAdminController from "./career.admin.controller.js";
+import investorAdminController from "./investor.admin.controller.js";
 
 import {
 
-    getAdminCareersSchema,
+    getAdminDocumentsSchema,
 
-    getAdminCareerSchema,
+    getAdminDocumentSchema,
 
-    createCareerSchema,
+    createDocumentSchema,
 
-    updateCareerSchema,
+    updateDocumentSchema,
 
-    updateCareerStatusSchema
+    updateDocumentStatusSchema
 
-} from "./career.admin.validator.js";
+} from "./investor.admin.validator.js";
 
 const router = Router();
-
-// =====================================================
-// Authentication
-// =====================================================
 
 router.use(authMiddleware);
 
@@ -35,9 +31,9 @@ router.get(
 
     "/",
 
-    validate(getAdminCareersSchema),
+    validate(getAdminDocumentsSchema),
 
-    careerAdminController.getCareers
+    investorAdminController.getDocuments
 
 );
 
@@ -45,9 +41,9 @@ router.get(
 
     "/:id",
 
-    validate(getAdminCareerSchema),
+    validate(getAdminDocumentSchema),
 
-    careerAdminController.getCareerById
+    investorAdminController.getDocumentById
 
 );
 
@@ -59,9 +55,9 @@ router.post(
 
     "/",
 
-    validate(createCareerSchema),
+    validate(createDocumentSchema),
 
-    careerAdminController.createCareer
+    investorAdminController.createDocument
 
 );
 
@@ -73,9 +69,9 @@ router.put(
 
     "/:id",
 
-    validate(updateCareerSchema),
+    validate(updateDocumentSchema),
 
-    careerAdminController.updateCareer
+    investorAdminController.updateDocument
 
 );
 
@@ -87,9 +83,9 @@ router.patch(
 
     "/:id/status",
 
-    validate(updateCareerStatusSchema),
+    validate(updateDocumentStatusSchema),
 
-    careerAdminController.updateCareerStatus
+    investorAdminController.updateDocumentStatus
 
 );
 
@@ -101,9 +97,9 @@ router.delete(
 
     "/:id",
 
-    validate(getAdminCareerSchema),
+    validate(getAdminDocumentSchema),
 
-    careerAdminController.deleteCareer
+    investorAdminController.deleteDocument
 
 );
 

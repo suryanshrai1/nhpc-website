@@ -3,15 +3,15 @@ import asyncHandler from "../../../utils/asyncHandler.js";
 import ApiResponse from "../../../utils/ApiResponse.js";
 import HTTP_STATUS from "../../../constants/httpStatus.js";
 
-import careerAdminService from "./career.admin.service.js";
+import leadershipAdminService from "./leadership.admin.service.js";
 
-class CareerAdminController {
+class LeadershipAdminController {
 
-    getCareers = asyncHandler(async (req, res) => {
+    getLeaders = asyncHandler(async (req, res) => {
 
         const { page, limit } = req.validated.query;
 
-        const data = await careerAdminService.getCareers({
+        const data = await leadershipAdminService.getLeaders({
 
             page,
 
@@ -25,7 +25,7 @@ class CareerAdminController {
 
                 HTTP_STATUS.OK,
 
-                "Job openings fetched successfully.",
+                "Leadership fetched successfully.",
 
                 data
 
@@ -35,11 +35,11 @@ class CareerAdminController {
 
     });
 
-    getCareerById = asyncHandler(async (req, res) => {
+    getLeaderById = asyncHandler(async (req, res) => {
 
         const { id } = req.validated.params;
 
-        const data = await careerAdminService.getCareerById(id);
+        const data = await leadershipAdminService.getLeaderById(id);
 
         return res.status(HTTP_STATUS.OK).json(
 
@@ -47,7 +47,7 @@ class CareerAdminController {
 
                 HTTP_STATUS.OK,
 
-                "Job opening fetched successfully.",
+                "Leader fetched successfully.",
 
                 data
 
@@ -57,9 +57,9 @@ class CareerAdminController {
 
     });
 
-    createCareer = asyncHandler(async (req, res) => {
+    createLeader = asyncHandler(async (req, res) => {
 
-        const data = await careerAdminService.createCareer(
+        const data = await leadershipAdminService.createLeader(
 
             req.validated.body
 
@@ -71,7 +71,7 @@ class CareerAdminController {
 
                 HTTP_STATUS.CREATED,
 
-                "Job opening created successfully.",
+                "Leader created successfully.",
 
                 data
 
@@ -81,11 +81,11 @@ class CareerAdminController {
 
     });
 
-    updateCareer = asyncHandler(async (req, res) => {
+    updateLeader = asyncHandler(async (req, res) => {
 
         const { id } = req.validated.params;
 
-        const data = await careerAdminService.updateCareer(
+        const data = await leadershipAdminService.updateLeader(
 
             id,
 
@@ -99,7 +99,7 @@ class CareerAdminController {
 
                 HTTP_STATUS.OK,
 
-                "Job opening updated successfully.",
+                "Leader updated successfully.",
 
                 data
 
@@ -109,13 +109,13 @@ class CareerAdminController {
 
     });
 
-    updateCareerStatus = asyncHandler(async (req, res) => {
+    updateLeaderStatus = asyncHandler(async (req, res) => {
 
         const { id } = req.validated.params;
 
         const { is_active } = req.validated.body;
 
-        const data = await careerAdminService.updateCareerStatus(
+        const data = await leadershipAdminService.updateLeaderStatus(
 
             id,
 
@@ -129,7 +129,7 @@ class CareerAdminController {
 
                 HTTP_STATUS.OK,
 
-                "Job opening status updated successfully.",
+                "Leader status updated successfully.",
 
                 data
 
@@ -139,11 +139,11 @@ class CareerAdminController {
 
     });
 
-    deleteCareer = asyncHandler(async (req, res) => {
+    deleteLeader = asyncHandler(async (req, res) => {
 
         const { id } = req.validated.params;
 
-        await careerAdminService.deleteCareer(id);
+        await leadershipAdminService.deleteLeader(id);
 
         return res.status(HTTP_STATUS.OK).json(
 
@@ -151,7 +151,7 @@ class CareerAdminController {
 
                 HTTP_STATUS.OK,
 
-                "Job opening deleted successfully.",
+                "Leader deleted successfully.",
 
                 null
 
@@ -163,4 +163,4 @@ class CareerAdminController {
 
 }
 
-export default new CareerAdminController();
+export default new LeadershipAdminController();
