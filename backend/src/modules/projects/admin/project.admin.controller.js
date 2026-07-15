@@ -89,6 +89,102 @@ class ProjectAdminController {
 
     });
 
+    // =====================================================
+    // PUT /admin/projects/:id
+    // =====================================================
+
+    updateProject = asyncHandler(async (req, res) => {
+
+        const { id } = req.validated.params;
+
+        const data = await projectAdminService.updateProject(
+
+            id,
+
+            req.validated.body
+
+        );
+
+        return res.status(HTTP_STATUS.OK).json(
+
+            new ApiResponse(
+
+                HTTP_STATUS.OK,
+
+                "Project updated successfully.",
+
+                data
+
+            )
+
+        );
+
+    });
+
+    // =====================================================
+    // PATCH /admin/projects/:id/status
+    // =====================================================
+
+    updateProjectStatus = asyncHandler(async (req, res) => {
+
+        const { id } = req.validated.params;
+
+        const { is_active } = req.validated.body;
+
+        const data = await projectAdminService.updateProjectStatus(
+
+            id,
+
+            is_active
+
+        );
+
+        return res.status(HTTP_STATUS.OK).json(
+
+            new ApiResponse(
+
+                HTTP_STATUS.OK,
+
+                "Project status updated successfully.",
+
+                data
+
+            )
+
+        );
+
+    });
+
+    // =====================================================
+    // DELETE /admin/projects/:id
+    // =====================================================
+
+    deleteProject = asyncHandler(async (req, res) => {
+
+        const { id } = req.validated.params;
+
+        await projectAdminService.deleteProject(
+
+            id
+
+        );
+
+        return res.status(HTTP_STATUS.OK).json(
+
+            new ApiResponse(
+
+                HTTP_STATUS.OK,
+
+                "Project deleted successfully.",
+
+                null
+
+            )
+
+        );
+
+    });
+
 }
 
 export default new ProjectAdminController();

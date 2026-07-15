@@ -11,7 +11,11 @@ import {
 
     getAdminProjectSchema,
 
-    createProjectSchema
+    createProjectSchema,
+
+    updateProjectSchema,
+
+    updateProjectStatusSchema
 
 } from "./project.admin.validator.js";
 
@@ -62,6 +66,41 @@ router.post(
     validate(createProjectSchema),
 
     projectAdminController.createProject
+
+);
+
+// =====================================================
+// PUT /admin/projects/:id
+// =====================================================
+
+router.put(
+
+    "/:id",
+
+    validate(updateProjectSchema),
+
+    projectAdminController.updateProject
+
+);
+// to change status of project
+router.patch(
+
+    "/:id/status",
+
+    validate(updateProjectStatusSchema),
+
+    projectAdminController.updateProjectStatus
+
+);
+
+// delete project
+router.delete(
+
+    "/:id",
+
+    validate(getAdminProjectSchema),
+
+    projectAdminController.deleteProject
 
 );
 

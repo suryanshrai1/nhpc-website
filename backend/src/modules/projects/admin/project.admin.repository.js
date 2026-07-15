@@ -42,6 +42,65 @@ class ProjectAdminRepository extends BaseRepository {
 
     }
 
+    // update
+    async updateProject(id, data) {
+
+        return this.update(
+
+            id,
+
+            data
+
+        );
+
+    }
+
+    async getProjectById(id) {
+
+        return this.findById(
+
+            id
+
+        );
+
+    }
+
+    // =====================================================
+    // Update Project Status
+    // =====================================================
+
+    async updateProjectStatus(id, is_active) {
+
+        return this.update(
+
+            id,
+
+            {
+
+                is_active,
+
+                updated_at: new Date()
+
+            }
+
+        );
+
+    }
+
+    // =====================================================
+    // Delete Project
+    // =====================================================
+
+    async deleteProject(id) {
+
+        return this.delete(
+
+            id
+
+        );
+
+    }
+
 }
 
 export default new ProjectAdminRepository();

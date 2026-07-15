@@ -106,3 +106,98 @@ export const createProjectSchema = z.object({
     })
 
 });
+
+export const updateProjectSchema = z.object({
+
+    params: z.object({
+
+        id: z.coerce
+            .number()
+            .int()
+            .positive()
+
+    }),
+
+    body: z.object({
+
+        name: z
+            .string()
+            .trim()
+            .min(3)
+            .max(255),
+
+        slug: z
+            .string()
+            .trim()
+            .regex(
+                /^[a-z0-9]+(?:-[a-z0-9]+)*$/,
+                "Invalid slug."
+            ),
+
+        project_type_id: z.coerce
+            .number()
+            .int()
+            .positive(),
+
+        project_status_id: z.coerce
+            .number()
+            .int()
+            .positive(),
+
+        state_id: z.coerce
+            .number()
+            .int()
+            .positive(),
+
+        capacity: z.coerce
+            .number()
+            .positive(),
+
+        capacity_unit_id: z.coerce
+            .number()
+            .int()
+            .positive(),
+
+        summary: z
+            .string()
+            .trim()
+            .optional(),
+
+        latitude: z
+            .string()
+            .optional(),
+
+        longitude: z
+            .string()
+            .optional(),
+
+        is_featured: z.boolean(),
+
+        display_order: z.coerce
+            .number()
+            .int(),
+
+        is_active: z.boolean()
+
+    })
+
+});
+
+export const updateProjectStatusSchema = z.object({
+
+    params: z.object({
+
+        id: z.coerce
+            .number()
+            .int()
+            .positive()
+
+    }),
+
+    body: z.object({
+
+        is_active: z.boolean()
+
+    })
+
+});
