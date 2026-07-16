@@ -19,6 +19,8 @@ import careerAdminRoutes from "../modules/careers/admin/index.js";
 import leadershipAdminRoutes from "../modules/leadership/admin/index.js";
 import sustainabilityAdminRoutes from "../modules/sustainability/admin/index.js";
 import investorAdminRoutes from "../modules/investors/admin/index.js";
+import mediaAdminRoutes from "../modules/media/admin/index.js";
+
 
 const router = Router();
 
@@ -142,6 +144,14 @@ router.use(
     "/admin/investors",
 
     investorAdminRoutes
+
+);
+
+router.use(
+
+    "/admin/media",
+
+    mediaAdminRoutes
 
 );
 
