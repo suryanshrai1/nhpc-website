@@ -21,6 +21,11 @@ import sustainabilityAdminRoutes from "../modules/sustainability/admin/index.js"
 import investorAdminRoutes from "../modules/investors/admin/index.js";
 import mediaAdminRoutes from "../modules/media/admin/index.js";
 import dashboardAdminRoutes from "../modules/dashboard/admin/index.js";
+import lookupAdminRoutes from "../modules/lookups/admin/index.js";
+import homepageAdminRoutes from "../modules/homepage/admin/index.js";
+
+
+
 
 const router = Router();
 
@@ -162,5 +167,22 @@ router.use(
     dashboardAdminRoutes
 
 );
+
+router.use(
+
+    "/admin/lookups",
+
+    lookupAdminRoutes
+
+);
+
+router.use(
+
+    "/admin/homepage",
+
+    homepageAdminRoutes
+
+);
+
 
 export default router;
