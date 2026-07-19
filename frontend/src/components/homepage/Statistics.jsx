@@ -1,31 +1,47 @@
 import { motion } from "framer-motion";
+
 import Section from "../ui/Section";
 import Container from "../ui/Container";
+import SectionHeading from "../ui/SectionHeading";
 import StatCard from "../ui/StatCard";
 
-export default function Statistics({ statistics }) {
-    if (!statistics || statistics.length === 0) return null;
-
-    const containerVariants = {
-        hidden: {},
-        visible: {
-            transition: {
-                staggerChildren: 0.15,
-            },
+const containerVariants = {
+    hidden: {},
+    visible: {
+        transition: {
+            staggerChildren: 0.15,
         },
-    };
+    },
+};
+
+export default function Statistics({ statistics }) {
+    if (
+        !statistics ||
+        !statistics.isVisible ||
+        !statistics.items?.length
+    ) {
+        return null;
+    }
 
     return (
-        <Section className="bg-slate-50/50 border-t border-b border-slate-100">
+        <Section className="border-y border-slate-200/60 bg-slate-50/50">
             <Container>
+                <SectionHeading
+                    title={statistics.title}
+                    subtitle={statistics.subtitle}
+                />
+
                 <motion.div
                     variants={containerVariants}
                     initial="hidden"
                     whileInView="visible"
-                    viewport={{ once: true, margin: "-10% 0px" }}
-                    className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 md:gap-10"
+                    viewport={{
+                        once: true,
+                        margin: "-10% 0px",
+                    }}
+                    className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4 lg:gap-8"
                 >
-                    {statistics.map((stat) => (
+                    {statistics.items.map((stat) => (
                         <StatCard
                             key={stat.id}
                             value={stat.value}

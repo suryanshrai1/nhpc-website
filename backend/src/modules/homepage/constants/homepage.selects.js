@@ -65,25 +65,27 @@ export const SUSTAINABILITY_CARD_SELECT = {
 };
 
 export const OPS_CARD_SELECT = {
-
     id: true,
-
     name: true,
-
     slug: true,
 
     installed_capacity: true,
 
+    latitude: true,
+    longitude: true,
+
     states: {
         select: {
-            name: true
-        }
+            id: true,
+            name: true,
+            code: true,
+        },
     },
 
     project_types: {
         select: {
-            name: true
-        }
-    }
-
+            id: true,
+            name: true,
+        },
+    },
 };

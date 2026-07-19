@@ -1,13 +1,32 @@
 import { Link } from "react-router-dom";
 import { getButtonStyles } from "../../utils/button";
 
-export default function Button({ label, url, variant = "Primary", className = "", ...props }) {
+export default function Button({
+    label,
+    children,
+    url,
+    variant = "primary",
+    leftIcon,
+    rightIcon,
+    className = "",
+    ...props
+}) {
     const buttonStyles = `${getButtonStyles(variant)} ${className}`;
+
+    const content = (
+        <>
+            {leftIcon && <span className="flex-shrink-0">{leftIcon}</span>}
+
+            <span>{children ?? label}</span>
+
+            {rightIcon && <span className="flex-shrink-0">{rightIcon}</span>}
+        </>
+    );
 
     if (!url) {
         return (
             <button className={buttonStyles} {...props}>
-                {label}
+                {content}
             </button>
         );
     }
@@ -23,14 +42,14 @@ export default function Button({ label, url, variant = "Primary", className = ""
                 className={buttonStyles}
                 {...props}
             >
-                {label}
+                {content}
             </a>
         );
     }
 
     return (
         <Link to={url} className={buttonStyles} {...props}>
-            {label}
+            {content}
         </Link>
     );
 }

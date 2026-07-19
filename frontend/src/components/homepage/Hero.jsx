@@ -1,128 +1,174 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { getMediaUrl } from "../../utils/media";
+import { ChevronDown } from "lucide-react";
+
+import Badge from "../ui/Badge";
 import Button from "../ui/Button";
+import Container from "../ui/Container";
 
-export default function Hero({ homepage }) {
-    if (!homepage) return null;
+const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+        opacity: 1,
+        transition: {
+            staggerChildren: 0.18,
+            delayChildren: 0.2,
+        },
+    },
+};
 
-    const { heroTitle, heroSubtitle, heroImage, heroVideo, heroButtons } = homepage;
+const itemVariants = {
+    hidden: {
+        opacity: 0,
+        y: 30,
+    },
+    visible: {
+        opacity: 1,
+        y: 0,
+        transition: {
+            duration: 0.7,
+            ease: [0.16, 1, 0.3, 1],
+        },
+    },
+};
+
+export default function Hero({ hero }) {
+    if (!hero) return null;
+
+    const {
+        title,
+        subtitle,
+        description,
+        badge,
+        heroImage,
+        heroVideo,
+        buttons = [],
+    } = hero;
+
     const [videoError, setVideoError] = useState(false);
-
-    const videoUrl = getMediaUrl(heroVideo);
-    const imageUrl = getMediaUrl(heroImage);
-
-    // Stagger animation container
-    const containerVariants = {
-        hidden: { opacity: 0 },
-        visible: {
-            opacity: 1,
-            transition: {
-                staggerChildren: 0.2,
-                delayChildren: 0.1,
-            },
-        },
-    };
-
-    // Fade up animation item
-    const itemVariants = {
-        hidden: { opacity: 0, y: 40 },
-        visible: {
-            opacity: 1,
-            y: 0,
-            transition: {
-                type: "spring",
-                stiffness: 70,
-                damping: 18,
-            },
-        },
-    };
-
-    // Helper to determine link component
-    const renderButton = (button) => {
-        if (!button || !button.label) return null;
-        return (
-            <Button
-                key={button.id}
-                label={button.label}
-                url={button.url}
-                variant={button.variant}
-            />
-        );
-    };
+    const [videoLoaded, setVideoLoaded] = useState(false);
 
     return (
-        <section className="relative w-full h-screen flex items-center justify-center overflow-hidden bg-slate-950 select-none">
-            {/* Background Media */}
-            <div className="absolute inset-0 w-full h-full z-0 select-none pointer-events-none">
-                {videoUrl && !videoError ? (
+        <section className="relative isolate min-h-screen overflow-hidden bg-slate-950">
+            {/* Background */}
+            <div className="absolute inset-0">
+                {heroVideo && !videoError ? (
                     <video
-                        src={videoUrl}
-                        poster={imageUrl || undefined}
                         autoPlay
                         muted
                         loop
                         playsInline
+                        poster={heroImage || undefined}
+                        onLoadedData={() => setVideoLoaded(true)}
                         onError={() => setVideoError(true)}
-                        className="w-full h-full object-cover scale-105"
-                    />
-                ) : imageUrl ? (
+                        className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-700 ${
+                            videoLoaded ? "opacity-100" : "opacity-0"
+                        }`}
+                    >
+                        <source src={heroVideo} />
+                    </video>
+                ) : heroImage ? (
                     <img
-                        src={imageUrl}
-                        alt="Hero Background"
-                        className="w-full h-full object-cover scale-105"
+                        src={heroImage}
+                        alt={title || "NHPC Hero"}
+                        className="absolute inset-0 h-full w-full object-cover"
                     />
                 ) : (
-                    <div className="w-full h-full bg-slate-900" />
+                    <div className="absolute inset-0 bg-slate-900" />
                 )}
+
+                <div className="absolute inset-0 bg-black/45" />
+
+                <div className="absolute inset-0 bg-gradient-to-b from-slate-950/70 via-transparent to-slate-950" />
+
+                <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(37,99,235,0.22),transparent_60%)]" />
             </div>
 
+            {/* Content */}
+            <div className="relative z-10 flex min-h-screen items-center">
+                <Container>
+                    <motion.div
+                        variants={containerVariants}
+                        initial="hidden"
+                        animate="visible"
+                        className="max-w-3xl"
+                    >
+                        {badge && (
+                            <motion.div variants={itemVariants}>
+                                <Badge className="border-blue-400/30 bg-blue-500/15 text-blue-100 backdrop-blur-md">
+                                    {badge}
+                                </Badge>
+                            </motion.div>
+                        )}
 
-            {/* Dark Overlay for Readability */}
-            <div className="absolute inset-0 bg-gradient-to-b from-slate-950/70 via-slate-950/50 to-slate-950/80 z-10 pointer-events-none" />
+                        {title && (
+                            <motion.h1
+                                variants={itemVariants}
+                                className="mt-8 text-5xl font-bold leading-tight tracking-tight text-white md:text-6xl xl:text-7xl"
+                            >
+                                {title}
+                            </motion.h1>
+                        )}
 
-            {/* Hero Content Container */}
-            <div className="relative z-20 w-full max-w-7xl mx-auto px-6 md:px-12 lg:px-16 text-center flex flex-col items-center">
-                <motion.div
-                    variants={containerVariants}
-                    initial="hidden"
-                    animate="visible"
-                    className="flex flex-col items-center max-w-4xl"
-                >
-                    {/* Hero Title */}
-                    {heroTitle && (
-                        <motion.h1
-                            variants={itemVariants}
-                            className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight text-white leading-[1.1] mb-6"
-                        >
-                            {heroTitle}
-                        </motion.h1>
-                    )}
+                        {subtitle && (
+                            <motion.h2
+                                variants={itemVariants}
+                                className="mt-6 text-xl font-medium text-blue-100 md:text-2xl"
+                            >
+                                {subtitle}
+                            </motion.h2>
+                        )}
 
-                    {/* Hero Subtitle */}
-                    {heroSubtitle && (
-                        <motion.p
-                            variants={itemVariants}
-                            className="text-lg sm:text-xl md:text-2xl text-slate-200/90 font-light leading-relaxed max-w-2xl mb-10"
-                        >
-                            {heroSubtitle}
-                        </motion.p>
-                    )}
+                        {description && (
+                            <motion.p
+                                variants={itemVariants}
+                                className="mt-8 max-w-2xl text-lg leading-8 text-slate-300"
+                            >
+                                {description}
+                            </motion.p>
+                        )}
 
-                    {/* Action Buttons */}
-                    {heroButtons && heroButtons.length > 0 && (
-                        <motion.div
-                            variants={itemVariants}
-                            className="flex flex-col sm:flex-row gap-4 justify-center items-center w-full sm:w-auto"
-                        >
-                            {heroButtons.map((button) => renderButton(button))}
-                        </motion.div>
-                    )}
-                </motion.div>
+                        {buttons.length > 0 && (
+                            <motion.div
+                                variants={itemVariants}
+                                className="mt-10 flex flex-wrap gap-4"
+                            >
+                                {buttons.map((button) => (
+                                    <motion.div
+                                        key={button.id}
+                                        variants={itemVariants}
+                                    >
+                                        <Button
+                                            label={button.label}
+                                            url={button.url}
+                                            variant={button.variant}
+                                        />
+                                    </motion.div>
+                                ))}
+                            </motion.div>
+                        )}
+                    </motion.div>
+                </Container>
             </div>
 
-            {/* Bottom Accent Decorator */}
-            <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-slate-950 to-transparent z-15 pointer-events-none" />
+            {/* Scroll Indicator */}
+            <div className="absolute bottom-8 left-1/2 z-20 -translate-x-1/2">
+                <div className="flex flex-col items-center text-white/80">
+                    <span className="mb-2 text-xs uppercase tracking-[0.25em]">
+                        Scroll
+                    </span>
+
+                    <motion.div
+                        animate={{ y: [0, 8, 0] }}
+                        transition={{
+                            duration: 1.8,
+                            repeat: Infinity,
+                        }}
+                    >
+                        <ChevronDown size={24} />
+                    </motion.div>
+                </div>
+            </div>
         </section>
     );
 }

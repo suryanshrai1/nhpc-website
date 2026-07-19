@@ -1,29 +1,19 @@
-import { useEffect, useState } from "react";
-import { getProjects } from "../services/projectService";
+import { useQuery } from "@tanstack/react-query";
+import { getProjects } from "../api/project.api";
+import { getProjectBySlug } from "../api/project.api";
+
 
 export default function useProjects() {
-    const [projects, setProjects] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
+    return useQuery({
+        queryKey: ["projects"],
+        queryFn: getProjects,
+    });
+}
 
-    useEffect(() => {
-        async function fetchProjects() {
-            try {
-                const response = await getProjects();
-                setProjects(response.data || []);
-            } catch (err) {
-                setError(err);
-            } finally {
-                setLoading(false);
-            }
-        }
-
-        fetchProjects();
-    }, []);
-
-    return {
-        projects,
-        loading,
-        error,
-    };
+export default function useProject(slug) {
+    return useQuery({
+        queryKey: ["project", slug],
+        queryFn: () => getProjectBySlug(slug),
+        enabled: !!slug,
+    });
 }
