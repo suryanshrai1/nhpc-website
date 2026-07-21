@@ -10,10 +10,9 @@ import { uploadMediaSchema } from "./media.validator.js";
 
 const router = Router();
 
-router.use(authMiddleware);
-
 router.post(
     "/upload",
+    authMiddleware,
     upload.single("file"),
     validate(uploadMediaSchema),
     mediaController.upload
@@ -31,6 +30,7 @@ router.get(
 
 router.delete(
     "/:id",
+    authMiddleware,
     mediaController.delete
 );
 

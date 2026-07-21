@@ -127,7 +127,11 @@ class ProjectAdminService extends CrudService {
 
             state_id: BigInt(data.state_id),
 
-            capacity_unit_id: BigInt(data.capacity_unit_id)
+            capacity_unit_id: BigInt(data.capacity_unit_id),
+
+            thumbnail_media_id: data.thumbnail_media_id ? BigInt(data.thumbnail_media_id) : null,
+
+            hero_media_id: data.hero_media_id ? BigInt(data.hero_media_id) : null
 
         });
 
@@ -215,6 +219,10 @@ class ProjectAdminService extends CrudService {
                 display_order: data.display_order,
 
                 is_active: data.is_active,
+
+                thumbnail_media_id: data.thumbnail_media_id ? BigInt(data.thumbnail_media_id) : null,
+
+                hero_media_id: data.hero_media_id ? BigInt(data.hero_media_id) : null,
 
                 updated_at: new Date()
 

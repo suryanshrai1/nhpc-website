@@ -2,7 +2,7 @@ import Badge from "./Badge";
 
 export default function SectionHeading({ badge, title, subtitle, className = "" }) {
     return (
-        <div className={`flex flex-col mb-16 md:mb-20 max-w-2xl ${className}`}>
+        <div className={`flex flex-col mb-10 md:mb-12 max-w-2xl ${className}`}>
             {badge && (
                 <div className="mb-4">
                     <Badge>{badge}</Badge>

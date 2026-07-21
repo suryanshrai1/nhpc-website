@@ -8,7 +8,13 @@ const mapProjectCard = (project) => ({
 
     summary: project.summary,
 
-    thumbnail: null,
+    thumbnail: project.thumbnail_media
+        ? {
+            id: Number(project.thumbnail_media.id),
+            url: project.thumbnail_media.storage_path,
+            alt: project.thumbnail_media.alt_text
+        }
+        : null,
 
     capacity: Number(project.capacity),
 
@@ -41,6 +47,22 @@ const mapProjectDetails = (project) => ({
         capacityUnit: project.capacity_units.code,
 
         isFeatured: project.is_featured,
+
+        thumbnail: project.thumbnail_media
+            ? {
+                id: Number(project.thumbnail_media.id),
+                url: project.thumbnail_media.storage_path,
+                alt: project.thumbnail_media.alt_text
+            }
+            : null,
+
+        heroImage: project.hero_media
+            ? {
+                id: Number(project.hero_media.id),
+                url: project.hero_media.storage_path,
+                alt: project.hero_media.alt_text
+            }
+            : null,
 
         state: {
 
@@ -138,7 +160,9 @@ const mapProjectDetails = (project) => ({
 
             height: document.media_files.height,
 
-            duration: document.media_files.duration_seconds,
+            duration: document.media_files.duration_seconds
+                ? Number(document.media_files.duration_seconds)
+                : null,
 
             storageProvider: document.media_files.storage_provider,
 

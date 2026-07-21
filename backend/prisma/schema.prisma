@@ -382,6 +382,8 @@ model media_files {
   news_documents     news_documents[]
   project_documents  project_documents[]
   tender_documents   tender_documents[]
+    project_thumbnails projects[] @relation("ProjectThumbnail")
+  project_heroes     projects[] @relation("ProjectHero")
 
   @@index([folder_id], map: "idx_media_files_folder")
   @@index([storage_provider], map: "idx_media_files_storage_provider")
@@ -650,26 +652,39 @@ model projects {
   id                        BigInt                      @id(map: "pk_projects") @default(autoincrement())
   name                      String                      @db.VarChar(200)
   slug                      String                      @unique(map: "uq_projects_slug") @db.VarChar(250)
+
   state_id                  BigInt
   project_type_id           BigInt
   project_status_id         BigInt
+
   capacity                  Decimal                     @db.Decimal(12, 2)
   capacity_unit_id          BigInt
+
+  thumbnail_media_id        BigInt?
+  hero_media_id             BigInt?
+
   summary                   String?
   latitude                  Decimal?                    @db.Decimal(10, 7)
   longitude                 Decimal?                    @db.Decimal(10, 7)
+
   is_featured               Boolean                     @default(false)
   display_order             Int                         @default(1)
   is_active                 Boolean                     @default(true)
+
   created_at                DateTime                    @default(now()) @db.Timestamptz(6)
   updated_at                DateTime                    @default(now()) @db.Timestamptz(6)
+
   project_details           project_details?
   project_documents         project_documents[]
   project_technical_details project_technical_details[]
+
   capacity_units            capacity_units              @relation(fields: [capacity_unit_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_projects_capacity_unit")
   states                    states                      @relation(fields: [state_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_projects_state")
   project_statuses          project_statuses            @relation(fields: [project_status_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_projects_status")
   project_types             project_types               @relation(fields: [project_type_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_projects_type")
+
+  thumbnail_media           media_files?                @relation("ProjectThumbnail", fields: [thumbnail_media_id], references: [id], onDelete: SetNull, onUpdate: NoAction, map: "fk_projects_thumbnail")
+  hero_media                media_files?                @relation("ProjectHero", fields: [hero_media_id], references: [id], onDelete: SetNull, onUpdate: NoAction, map: "fk_projects_hero")
 
   @@index([is_active], map: "idx_projects_active")
   @@index([is_featured], map: "idx_projects_featured")

@@ -61,7 +61,10 @@ class MediaAdminService extends CrudService {
 
         }
 
-        const storagePath = file.path.replace(/\\/g, "/");
+        // Normalize absolute path to relative structure: "folders/filename.extension"
+        // e.g. from "C:/.../backend/uploads/documents/file.pdf" to "documents/file.pdf"
+        const folder = path.basename(file.destination);
+        const storagePath = `${folder}/${file.filename}`.replace(/\\/g, "/");
 
         const media = await mediaAdminRepository.createMedia({
 
@@ -300,11 +303,9 @@ class MediaAdminService extends CrudService {
     try {
 
         const absolutePath = path.resolve(
-
             process.cwd(),
-
+            env.UPLOAD_PATH,
             media.storage_path
-
         );
 
         await fs.unlink(

@@ -128,15 +128,33 @@ export const mapHomepageData = (data) => {
             financialYear: item.financial_years.label,
         }));
     }
-
+    
     if (sections.operationalStations) {
         sections.operationalStations.items = data.operationalStations.map((station) => ({
             id: Number(station.id),
             name: station.name,
             slug: station.slug,
+
             installedCapacity: Number(station.installed_capacity),
-            state: station.states.name,
-            type: station.project_types.name,
+
+            latitude: station.latitude
+                ? Number(station.latitude)
+                : null,
+
+            longitude: station.longitude
+                ? Number(station.longitude)
+                : null,
+
+            state: {
+                id: Number(station.states.id),
+                name: station.states.name,
+                code: station.states.code,
+            },
+
+            projectType: {
+                id: Number(station.project_types.id),
+                name: station.project_types.name,
+            },
         }));
     }
 

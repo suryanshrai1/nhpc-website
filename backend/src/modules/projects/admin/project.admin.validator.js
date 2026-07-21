@@ -101,7 +101,21 @@ export const createProjectSchema = z.object({
 
         is_active: z
             .boolean()
-            .default(true)
+            .default(true),
+
+        thumbnail_media_id: z.coerce
+            .number()
+            .int()
+            .positive()
+            .optional()
+            .nullable(),
+
+        hero_media_id: z.coerce
+            .number()
+            .int()
+            .positive()
+            .optional()
+            .nullable()
 
     })
 
@@ -177,7 +191,21 @@ export const updateProjectSchema = z.object({
             .number()
             .int(),
 
-        is_active: z.boolean()
+        is_active: z.boolean(),
+
+        thumbnail_media_id: z.coerce
+            .number()
+            .int()
+            .positive()
+            .optional()
+            .nullable(),
+
+        hero_media_id: z.coerce
+            .number()
+            .int()
+            .positive()
+            .optional()
+            .nullable()
 
     })
 

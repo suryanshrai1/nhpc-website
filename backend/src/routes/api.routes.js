@@ -11,8 +11,10 @@ import leadershipRoutes from "../modules/leadership/index.js";
 import tenderRoutes from "../modules/tenders/index.js";
 import careerRoutes from "../modules/careers/index.js";
 import investorRoutes from "../modules/investors/index.js";
+import contactRoutes from "../modules/contact/index.js";
 import dashboardRoutes from "../modules/admin/dashboard/index.js";
 import projectAdminRoutes from "../modules/projects/admin/index.js";
+import stationAdminRoutes from "../modules/admin/dashboard/station.admin.routes.js";
 import newsAdminRoutes from "../modules/news/admin/index.js";
 import tenderAdminRoutes from "../modules/tenders/admin/index.js";
 import careerAdminRoutes from "../modules/careers/admin/index.js";
@@ -23,6 +25,7 @@ import mediaAdminRoutes from "../modules/media/admin/index.js";
 import dashboardAdminRoutes from "../modules/dashboard/admin/index.js";
 import lookupAdminRoutes from "../modules/lookups/admin/index.js";
 import homepageAdminRoutes from "../modules/homepage/admin/index.js";
+import contactAdminRoutes from "../modules/contact/contact.admin.routes.js";
 
 
 
@@ -86,6 +89,14 @@ router.use(
 
 );
 
+router.use(
+
+    "/contact",
+
+    contactRoutes
+
+);
+
 // Admin routes
 
 router.use(
@@ -101,6 +112,14 @@ router.use(
     "/admin/projects",
 
     projectAdminRoutes
+
+);
+
+router.use(
+
+    "/admin/stations",
+
+    stationAdminRoutes
 
 );
 
@@ -184,5 +203,12 @@ router.use(
 
 );
 
+router.use(
+
+    "/admin/contact-messages",
+
+    contactAdminRoutes
+
+);
 
 export default router;

@@ -58,6 +58,14 @@ export const PROJECT_CARD_SELECT = {
 
         }
 
+    },
+
+    thumbnail_media: {
+        select: {
+            id: true,
+            storage_path: true,
+            alt_text: true
+        }
     }
 
 };
@@ -194,7 +202,7 @@ export const PROJECT_DETAIL_SELECT = {
 
             display_order: true,
 
-            
+
             media_files: {
 
                 select: MEDIA_FILE_SELECT
@@ -209,6 +217,22 @@ export const PROJECT_DETAIL_SELECT = {
 
         }
 
+    },
+
+    hero_media: {
+        select: {
+            id: true,
+            storage_path: true,
+            alt_text: true
+        }
+    },
+
+    thumbnail_media: {
+        select: {
+            id: true,
+            storage_path: true,
+            alt_text: true
+        }
     }
 
 };
@@ -237,6 +261,13 @@ export const PROJECT_RELATED_SELECT = {
 
         }
 
+    },
+    thumbnail_media: {
+        select: {
+            id: true,
+            storage_path: true,
+            alt_text: true
+        }
     }
 
 };

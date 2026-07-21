@@ -1,89 +1,90 @@
 import { motion } from "framer-motion";
+import { useNavigate } from "react-router-dom";
 import Button from "../ui/Button";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, MapPin, Zap } from "lucide-react";
+import { getMediaPublicUrl } from "../../utils/fileHelpers";
 
-// Helper to safely parse Strapi blocks format or text descriptions
-const parseDescription = (description, maxLength = 160) => {
-  if (!description) return "";
-  if (typeof description === "string") {
-    return description.length > maxLength
-      ? description.slice(0, maxLength) + "..."
-      : description;
-  }
-  if (Array.isArray(description)) {
-    const text = description
-      .map((block) => {
-        if (block.type === "paragraph" && Array.isArray(block.children)) {
-          return block.children.map((child) => child.text || "").join("");
-        }
-        return "";
-      })
-      .filter(Boolean)
-      .join(" ");
-    return text.length > maxLength ? text.slice(0, maxLength) + "..." : text;
-  }
-  return "";
-};
+// -------------------------
+// Badge Colors
+// -------------------------
 
-// Color mapping for project types
 const getTypeBadgeStyles = (type) => {
   switch (type) {
-    case "Hydro":
+    case "Hydroelectric":
       return "bg-blue-50 text-blue-700 border-blue-100";
+
     case "Solar":
       return "bg-amber-50 text-amber-700 border-amber-100";
+
     case "Wind":
       return "bg-teal-50 text-teal-700 border-teal-100";
+
     case "Pumped Storage":
       return "bg-indigo-50 text-indigo-700 border-indigo-100";
+
     default:
       return "bg-slate-50 text-slate-700 border-slate-100";
   }
 };
 
-// Color mapping for project status
 const getStatusBadgeStyles = (status) => {
   switch (status) {
     case "Operational":
       return "bg-emerald-50 text-emerald-700 border-emerald-100";
+
     case "Under Construction":
       return "bg-orange-50 text-orange-700 border-orange-100";
-    case "Planned":
-      return "bg-slate-100 text-slate-700 border-slate-200";
+
+    case "Approved":
+      return "bg-blue-50 text-blue-700 border-blue-100";
+
     default:
       return "bg-slate-50 text-slate-700 border-slate-100";
   }
 };
 
 export default function ProjectCard({ project, layout = "normal" }) {
+  const navigate = useNavigate();
+
   if (!project) return null;
 
   const {
     name,
     slug,
+    summary,
+    thumbnail,
     type,
+    status,
     state,
-    district,
-    description,
-    heroImage,
-    projectStatus,
     capacity,
     capacityUnit,
+    isFeatured,
   } = project;
 
-  const imageUrl =
-    heroImage ||
-    "https://images.unsplash.com/photo-1540350394557-8d14678e7f91?q=80&w=1000";
-  const shortDesc = parseDescription(
-    description,
-    layout === "large" ? 220 : 120,
-  );
+  const placeholders = {
+    Hydroelectric: "/images/placeholders/hydro.jpeg",
+    Solar: "/images/placeholders/solar.jpg",
+    Wind: "/images/placeholders/wind.jpg",
+    "Pumped Storage": "/images/placeholders/pumped-storage.jpg",
+  };
+
+  const rawUrl = thumbnail?.url;
+  const imageUrl = rawUrl
+    ? getMediaPublicUrl(rawUrl)
+    : (placeholders[type] ?? "/images/placeholders/default-project.jpeg");
+
+  const shortDesc =
+    summary?.length > (layout === "large" ? 220 : 130)
+      ? summary.slice(0, layout === "large" ? 220 : 130) + "..."
+      : summary;
 
   const isLarge = layout === "large";
 
-  // Card slide-up variants
   const cardVariants = {
-    hidden: { opacity: 0, y: 40 },
+    hidden: {
+      opacity: 0,
+      y: 40,
+    },
     visible: {
       opacity: 1,
       y: 0,
@@ -97,72 +98,99 @@ export default function ProjectCard({ project, layout = "normal" }) {
 
   return (
     <motion.div
+      onClick={() => navigate(`/projects/${slug}`)}
+      onKeyDown={(e) => e.key === "Enter" && navigate(`/projects/${slug}`)}
+      tabIndex={0}
+      role="article"
+      aria-label={`${name} – ${type ?? ""} project`}
       variants={cardVariants}
       whileHover={{
         y: -8,
-        boxShadow: "0 25px 50px -12px rgba(15, 23, 42, 0.08)",
-        borderColor: "rgb(226, 232, 240)", // border-slate-200 on hover
+        boxShadow: "0 25px 50px -12px rgba(15,23,42,0.08)",
+        borderColor: "rgb(226 232 240)",
       }}
-      className={`group bg-white rounded-3xl border border-slate-100 overflow-hidden shadow-sm transition-all duration-300 flex flex-col ${
+      className={`group overflow-hidden rounded-3xl border border-slate-100 bg-white shadow-sm transition-all duration-300 flex flex-col cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 ${
         isLarge ? "md:col-span-2 lg:flex-row" : ""
       }`}
     >
-      {/* Image Container */}
+      {/* Image */}
+
       <div
-        className={`relative overflow-hidden w-full ${isLarge ? "lg:w-1/2 aspect-[4/3] lg:aspect-auto" : "aspect-[16/10]"}`}
+        className={`relative overflow-hidden ${
+          isLarge
+            ? "w-full lg:w-1/2 aspect-[4/3] lg:aspect-auto"
+            : "aspect-[16/10]"
+        }`}
       >
         <img
           src={imageUrl}
-          alt={name}
-          className="w-full h-full object-cover group-hover:scale-[1.03] transition-transform duration-700 ease-out"
+          alt={thumbnail?.alt || name}
+          className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.04]"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-slate-950/20 to-transparent pointer-events-none" />
 
-        {/* Badges positioned absolutely inside image for normal layout, or rendered inline */}
-        <div className="absolute top-4 left-4 flex flex-wrap gap-2">
-          {type && (
+        <div className="absolute inset-0 bg-gradient-to-t from-slate-900/30 via-transparent to-transparent" />
+
+        {/* Featured */}
+
+        {isFeatured && (
+          <span className="absolute right-4 top-4 rounded-full bg-yellow-400 px-3 py-1 text-xs font-bold uppercase tracking-wide text-slate-900 shadow">
+            Featured
+          </span>
+        )}
+
+        {/* Type + Status */}
+
+        <div className="absolute left-4 top-4 flex flex-wrap gap-2">
+          <span
+            className={`rounded-full border px-3 py-1 text-xs font-semibold uppercase tracking-wider shadow-sm ${getTypeBadgeStyles(
+              type
+            )}`}
+          >
+            {type}
+          </span>
+
+          {status && (
             <span
-              className={`px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wider border shadow-sm ${getTypeBadgeStyles(type)}`}
+              className={`rounded-full border px-3 py-1 text-xs font-semibold uppercase tracking-wider shadow-sm ${getStatusBadgeStyles(
+                status
+              )}`}
             >
-              {type}
-            </span>
-          )}
-          {projectStatus && (
-            <span
-              className={`px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wider border shadow-sm ${getStatusBadgeStyles(projectStatus)}`}
-            >
-              {projectStatus}
+              {status}
             </span>
           )}
         </div>
       </div>
 
-      {/* Content Container */}
+      {/* Content */}
+
       <div
-        className={`p-8 md:p-10 flex flex-col justify-between flex-1 ${isLarge ? "lg:w-1/2" : ""}`}
+        className={`flex flex-1 flex-col justify-between p-8 md:p-10 ${
+          isLarge ? "lg:w-1/2" : ""
+        }`}
       >
         <div>
-          {/* Location and Capacity Metas */}
-          <div className="flex flex-wrap gap-x-4 gap-y-1 items-center text-xs font-semibold uppercase tracking-wider text-slate-400 mb-3">
+          {/* Meta */}
+
+          <div className="mb-4 flex flex-wrap items-center gap-5 text-sm text-slate-500">
             {state && (
-              <span>
-                {district ? `${district}, ` : ""}
+              <span className="flex items-center gap-1.5">
+                <MapPin size={15} className="text-slate-400" />
                 {state}
               </span>
             )}
-            {state && capacity && (
-              <span className="w-1 h-1 bg-slate-300 rounded-full" />
-            )}
+
             {capacity && (
-              <span className="text-blue-600 font-bold">
-                {capacity} {capacityUnit || "MW"}
+              <span className="flex items-center gap-1.5 font-semibold text-blue-600">
+                <Zap size={15} />
+                {capacity} {capacityUnit}
               </span>
             )}
           </div>
 
           {/* Title */}
+
           <h3
-            className={`font-bold text-slate-900 tracking-tight leading-tight group-hover:text-blue-600 transition-colors duration-300 mb-4 ${
+            className={`mb-4 font-bold leading-tight tracking-tight text-slate-900 transition-colors duration-300 group-hover:text-blue-600 ${
               isLarge
                 ? "text-2xl md:text-3xl lg:text-4xl"
                 : "text-xl md:text-2xl"
@@ -171,20 +199,20 @@ export default function ProjectCard({ project, layout = "normal" }) {
             {name}
           </h3>
 
-          {/* Short Description */}
-          <p className="text-slate-500 font-light leading-relaxed mb-6">
-            {shortDesc}
-          </p>
+          {/* Summary */}
+
+          <p className="mb-8 leading-relaxed text-slate-500">{shortDesc}</p>
         </div>
 
         {/* Button */}
-        <div>
+
+        <div onClick={(e) => e.stopPropagation()}>
           <Button
             url={`/projects/${slug}`}
             label="Explore Project"
             rightIcon={<ArrowRight size={16} />}
             variant="outline"
-            className="border-slate-200 text-slate-600 hover:bg-slate-50 hover:border-slate-300 hover:text-slate-900 px-6 py-2.5 text-sm font-semibold rounded-xl w-full sm:w-auto"
+            className="w-full rounded-xl border-slate-200 px-6 py-2.5 text-sm font-semibold text-slate-600 hover:border-slate-300 hover:bg-slate-50 hover:text-slate-900 sm:w-auto"
           />
         </div>
       </div>

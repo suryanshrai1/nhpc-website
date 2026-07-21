@@ -1,6 +1,7 @@
 import useHomepage from "../hooks/useHomepage";
 
 import Hero from "../components/homepage/Hero";
+import CTA from "../components/homepage/CTA";
 import Statistics from "../components/homepage/Statistics";
 import FeaturedProjects from "../components/homepage/FeaturedProjects";
 import LatestNews from "../components/homepage/LatestNews";
@@ -72,6 +73,8 @@ export default function Home() {
       <InvestorHighlights investorHighlights={homepage.investorHighlights} />
 
       <OperationalStations operationalStations={homepage.operationalStations} />
+
+      <CTA />
     </main>
   );
 }

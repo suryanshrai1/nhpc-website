@@ -74,7 +74,7 @@ export default function FeaturedProjects({ featuredProjects }) {
                     <div className="mt-12 flex justify-center">
                         <Link
                             to="/projects"
-                            className="group inline-flex items-center gap-2 rounded-full border border-slate-300 px-6 py-3 text-sm font-semibold text-slate-700 transition-all duration-300 hover:border-blue-700 hover:bg-blue-700 hover:text-white"
+                            className="group inline-flex items-center gap-2 rounded-full border border-slate-300 px-6 py-3 text-sm font-semibold text-slate-700 transition-all duration-300 hover:border-blue-700 hover:bg-blue-700 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
                         >
                             View All Projects
 
